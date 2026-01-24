@@ -7,6 +7,7 @@
         <meta name="description" content="Null Incorporated showcases innovative web projects including circuit.menu, coolstorydidntask.com, and applecountdown.com.">
         <meta name="keywords" content="Null Incorporated, circuit.menu, coolstorydidntask, applecountdown, web development, creative websites">
         <meta name="author" content="Null Incorporated">
+        <meta name="theme-color" content="#0a0a0a">
         <meta property="og:title" content="Null Incorporated - Innovative Web Projects">
         <meta property="og:description" content="Discover creative web projects by Null Incorporated including circuit.menu, coolstorydidntask.com, and applecountdown.com.">
         <meta property="og:type" content="website">
@@ -19,80 +20,130 @@
         <link rel="canonical" href="https://n-ull.com">
         <link rel="icon" type="image/png" href="favicon.png">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./css/index.css">
-        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     </head>
 <body>
-    <div class="grid"></div>
-    <div class="noise"></div>
-    <div class="scan-lines">
+    <!-- Background effects -->
+    <div class="bg-orb bg-orb-1" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-2" aria-hidden="true"></div>
+    <div class="grid" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="scan-lines" aria-hidden="true">
         <div class="scan-line"></div>
     </div>
-    
-    <div class="glitch-container">
-        <h1 class="logo glitch">
-            <span class="glitch-text">Null Incorporated</span>
-        </h1>
-        <div class="logo-subtitle">// CREATIVE WEB SOLUTIONS //</div>
-    </div>
-    
-    <div class="domains-container">
-        <a href="https://circuit.menu" target="_blank" rel="noopener noreferrer" class="domain-card">
-            <h2 class="domain-name">circuit.menu<span class="terminal-cursor"></span></h2>
-        </a>
-        
-        <a href="https://coolstorydidntask.com" target="_blank" rel="noopener noreferrer" class="domain-card coolstory-card">
-    <h2 class="domain-name">coolstorydidntask.com<span class="terminal-cursor"></span></h2>
-    <p class="domain-explainer">Testing</p>
-</a>
-        
-        <a href="https://obscurapdf.com" target="_blank" rel="noopener noreferrer" class="domain-card">
-    <h2 class="domain-name">obscurapdf.com<span class="terminal-cursor"></span></h2>
-    <p class="domain-explainer">PDF Tools</p>
-</a>
- 
-        <a href="https://mi6.tf" target="_blank" rel="noopener noreferrer" class="domain-card">
-            <h2 class="domain-name">mi6.tf<span class="terminal-cursor"></span></h2>
 
-        </a>
-        
-        <div class="domain-card placeholder-card">
-            <h2 class="domain-name">Coming soon<span class="terminal-cursor"></span></h2>
-            <p class="domain-explainer">In development</p>
-        </div>
-        
-        <div class="domain-card placeholder-card">
-            <h2 class="domain-name">Coming soon<span class="terminal-cursor"></span></h2>
-            <p class="domain-explainer">Coming soon</p>
-        </div>
-    </div>
-    
-    <div class="status-bar">
+    <!-- Main content -->
+    <main class="main-content">
+        <header class="glitch-container">
+            <h1 class="logo glitch">
+                <span class="glitch-text">Null Incorporated</span>
+            </h1>
+            <p class="logo-subtitle">// CREATIVE WEB SOLUTIONS //</p>
+        </header>
+
+        <section class="domains-container" aria-label="Projects">
+            <a href="https://circuit.menu" target="_blank" rel="noopener noreferrer" class="domain-card">
+                <div class="card-shine" aria-hidden="true"></div>
+                <div class="card-header">
+                    <h2 class="domain-name">circuit.menu<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </div>
+                <p class="domain-explainer">Digital Menu Platform</p>
+            </a>
+
+            <a href="https://coolstorydidntask.com" target="_blank" rel="noopener noreferrer" class="domain-card">
+                <div class="card-shine" aria-hidden="true"></div>
+                <div class="card-header">
+                    <h2 class="domain-name">coolstorydidntask.com<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </div>
+                <p class="domain-explainer">Testing</p>
+            </a>
+
+            <a href="https://obscurapdf.com" target="_blank" rel="noopener noreferrer" class="domain-card">
+                <div class="card-shine" aria-hidden="true"></div>
+                <div class="card-header">
+                    <h2 class="domain-name">obscurapdf.com<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </div>
+                <p class="domain-explainer">PDF Tools</p>
+            </a>
+
+            <a href="https://mi6.tf" target="_blank" rel="noopener noreferrer" class="domain-card">
+                <div class="card-shine" aria-hidden="true"></div>
+                <div class="card-header">
+                    <h2 class="domain-name">mi6.tf<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                    <svg class="external-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </div>
+            </a>
+
+            <div class="domain-card placeholder-card">
+                <div class="card-header">
+                    <h2 class="domain-name">Coming soon<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                </div>
+                <p class="domain-explainer">In development</p>
+            </div>
+
+            <div class="domain-card placeholder-card">
+                <div class="card-header">
+                    <h2 class="domain-name">Coming soon<span class="terminal-cursor" aria-hidden="true"></span></h2>
+                </div>
+                <p class="domain-explainer">In development</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Status bar -->
+    <aside class="status-bar" aria-label="System status">
         <div class="status-item">
-            <span class="status-dot online"></span>
-            SYSTEMS ONLINE
+            <span class="status-dot online" aria-hidden="true"></span>
+            <span>SYSTEMS ONLINE</span>
         </div>
         <div class="status-item">
-            <span class="status-dot"></span>
-            <span class="uptime">UPTIME: <span id="uptime">99.7%</span></span>
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="uptime">UPTIME: <span id="uptime">99.70%</span></span>
         </div>
-    </div>
-    
-    <div class="ticker">
-        <div class="ticker-text">
-            <span class="ticker-segment">Null Incorporated</span>
-            <span class="ticker-divider">//</span>
-            <a href="https://n-ull.com" class="ticker-link">n-ull.com</a>
-            <span class="ticker-divider">//</span>
-            <span class="ticker-segment">Web Development</span>
-            <span class="ticker-divider">//</span>
-            <a href="mailto:contact@n-ull.com" class="ticker-link">contact@n-ull.com</a>
-            <span class="ticker-divider">//</span>
-            <span class="ticker-segment">Digital Solutions</span>
-            <span class="ticker-divider">//</span>
+    </aside>
+
+    <!-- Footer ticker -->
+    <footer class="ticker" aria-label="Company information">
+        <div class="ticker-track">
+            <div class="ticker-content">
+                <div class="ticker-text">
+                    <span class="ticker-segment">Null Incorporated</span>
+                    <span class="ticker-divider" aria-hidden="true">//</span>
+                    <a href="https://n-ull.com" class="ticker-link">n-ull.com</a>
+                    <span class="ticker-divider" aria-hidden="true">//</span>
+                    <span class="ticker-segment">Web Development</span>
+                    <span class="ticker-divider" aria-hidden="true">//</span>
+                    <a href="mailto:contact@n-ull.com" class="ticker-link">contact@n-ull.com</a>
+                    <span class="ticker-divider" aria-hidden="true">//</span>
+                    <span class="ticker-segment">Digital Solutions</span>
+                    <span class="ticker-divider" aria-hidden="true">//</span>
+                </div>
+            </div>
         </div>
-    </div>
-    
+    </footer>
+
     <script src="./js/index.js"></script>
 </body>
 </html>
