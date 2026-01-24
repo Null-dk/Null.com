@@ -6,6 +6,10 @@
 (function() {
     'use strict';
 
+    // Configuration
+    const API_BASE_URL = 'https://api.n-ull.com'; // Change to your backend URL
+    const UPTIME_REFRESH_INTERVAL = 60000; // Refresh uptime every 60 seconds
+
     // Feature detection
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -151,29 +155,88 @@
     }
 
     /**
-     * Dynamic uptime display
+     * Dynamic uptime display - fetches real data from BetterStack via backend API
      */
     function initUptimeDisplay() {
         const uptimeEl = document.getElementById('uptime');
+        const statusDot = document.querySelector('.status-dot.online');
+        const statusText = document.querySelector('.status-item:first-child span:last-child');
+
         if (!uptimeEl) return;
 
-        function updateUptime() {
-            const baseUptime = 99.7;
-            const variation = (Math.random() - 0.5) * 0.15;
-            const uptime = Math.max(99.0, Math.min(99.99, baseUptime + variation));
+        // Last known uptime for fallback
+        let lastKnownUptime = null;
 
-            // Animate the number change
+        /**
+         * Update the uptime display with animation
+         */
+        function displayUptime(uptime, isOnline = true) {
             uptimeEl.style.transition = 'opacity 150ms ease';
             uptimeEl.style.opacity = '0.5';
 
             setTimeout(() => {
-                uptimeEl.textContent = uptime.toFixed(2) + '%';
+                if (uptime !== null) {
+                    uptimeEl.textContent = uptime.toFixed(2) + '%';
+                    lastKnownUptime = uptime;
+                } else if (lastKnownUptime !== null) {
+                    uptimeEl.textContent = lastKnownUptime.toFixed(2) + '%';
+                } else {
+                    uptimeEl.textContent = '--.--%';
+                }
                 uptimeEl.style.opacity = '1';
             }, 150);
+
+            // Update status indicator
+            if (statusDot) {
+                statusDot.style.background = isOnline ? 'var(--accent-color)' : 'var(--accent-danger)';
+                statusDot.style.boxShadow = isOnline
+                    ? '0 0 8px rgba(255, 255, 255, 0.3)'
+                    : '0 0 8px rgba(255, 100, 100, 0.3)';
+            }
+
+            if (statusText) {
+                statusText.textContent = isOnline ? 'SYSTEMS ONLINE' : 'SYSTEMS DEGRADED';
+            }
         }
 
-        updateUptime();
-        setInterval(updateUptime, 20000);
+        /**
+         * Fetch uptime from backend API
+         */
+        async function fetchUptime() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/uptime`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    // Short timeout to avoid blocking
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.uptime !== null) {
+                    displayUptime(data.uptime, data.allOperational);
+                } else {
+                    // API returned but no uptime data
+                    displayUptime(lastKnownUptime, true);
+                }
+            } catch (error) {
+                console.warn('Failed to fetch uptime:', error.message);
+                // Show last known value or fallback
+                displayUptime(lastKnownUptime, lastKnownUptime !== null);
+            }
+        }
+
+        // Initial fetch
+        fetchUptime();
+
+        // Refresh periodically
+        setInterval(fetchUptime, UPTIME_REFRESH_INTERVAL);
     }
 
     /**
