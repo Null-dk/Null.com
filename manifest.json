@@ -1,0 +1,21 @@
+{
+  "name": "Null Incorporated",
+  "short_name": "Null Inc",
+  "description": "Showcase of innovative web projects by Null Incorporated",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

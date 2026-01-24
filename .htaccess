@@ -1,0 +1,76 @@
+# Enable GZIP compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
+</IfModule>
+
+# Set browser caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/html "access plus 1 day"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# All rewrite rules
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Redirect to HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  
+  # Redirect www to non-www
+  RewriteCond %{HTTP_HOST} ^www\.n-ull\.com [NC]
+  RewriteRule ^(.*)$ https://n-ull.com/$1 [L,R=301]
+  
+  # Block access to tools/video
+  RedirectMatch 403 ^/tools/video/?$
+  
+  # Special handling for source-code in circuit subdirectory
+  RewriteRule ^circuit/source-code/?$ /circuit/source-code.html [L]
+  
+  # Redirect other circuit URLs to n-ull.com/circuit
+  RewriteRule ^circuit/features/?$ https://n-ull.com/circuit [R=301,L]
+  RewriteRule ^circuit/staff/?$ https://n-ull.com/circuit [R=301,L]
+  RewriteRule ^circuit/circuit/?$ https://n-ull.com/circuit [R=301,L]
+  RewriteRule ^circuit/faq/?$ https://n-ull.com/circuit [R=301,L]
+  RewriteRule ^circuit/resellers/?$ https://n-ull.com/circuit [R=301,L]
+  
+  # Remove .html extension from URLs
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^([^\.]+)/?$ $1.html [L]
+  
+  # Redirect index.html to the root URL
+  RewriteCond %{THE_REQUEST} ^GET\ /.+index\.html?\ HTTP
+  RewriteRule ^(.+)index\.html?$ /$1 [R=301,L]
+</IfModule>
+
+# Prevent viewing of .htaccess file
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Block access to about.html
+<Files "about.html">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Custom error pages
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
