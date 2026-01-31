@@ -18,7 +18,7 @@ const domains = [
   {
     name: 'coolstorydidntask.com',
     url: 'https://coolstorydidntask.com',
-    description: 'Testing environment for testing projects before they go live. Internal use only.',
+    description: 'Testing environment for testing projects before they go live. Public preview.',
     tag: 'Beta',
     icon: '>',
   },
