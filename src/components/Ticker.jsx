@@ -4,8 +4,6 @@ function TickerContent() {
     { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' },
     { type: 'text', value: 'Creative Web Solutions' },
     { type: 'text', value: 'Digital Products' },
-    { type: 'text', value: 'Open Source' },
-    { type: 'text', value: 'Based in Denmark' },
   ]
 
   return (
