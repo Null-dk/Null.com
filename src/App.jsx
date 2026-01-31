@@ -18,14 +18,14 @@ const domains = [
   {
     name: 'coolstorydidntask.com',
     url: 'https://coolstorydidntask.com',
-    description: 'Staging environment for testing projects before they go live. Internal use only.',
-    tag: 'Staging',
+    description: 'Testing environment for testing projects before they go live. Internal use only.',
+    tag: 'Beta',
     icon: '>',
   },
   {
     name: 'obscurapdf.com',
     url: 'https://obscurapdf.com',
-    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely in the browser.',
+    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
     tag: 'Live',
     icon: '#',
   },
