@@ -11,15 +11,15 @@ const domains = [
   {
     name: 'circuit.menu',
     url: 'https://circuit.menu',
-    description: 'A modern digital menu platform for restaurants and cafes. Beautiful, fast, and easy to manage.',
+    description: 'A GTA 5 mod menu. Feature-rich, regularly updated, and built for performance.',
     tag: 'Live',
     icon: '~',
   },
   {
     name: 'coolstorydidntask.com',
     url: 'https://coolstorydidntask.com',
-    description: 'Experimental playground for testing new web technologies and interaction patterns.',
-    tag: 'Beta',
+    description: 'Staging environment for testing projects before they go live. Internal use only.',
+    tag: 'Staging',
     icon: '>',
   },
   {
@@ -32,8 +32,8 @@ const domains = [
   {
     name: 'mi6.tf',
     url: 'https://mi6.tf',
-    description: 'Classified project. Details available on a need-to-know basis only.',
-    tag: 'Stealth',
+    description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
+    tag: 'Live',
     icon: '!',
   },
 ]

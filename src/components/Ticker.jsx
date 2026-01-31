@@ -3,7 +3,6 @@ function TickerContent() {
     { type: 'text', value: 'Null Incorporated' },
     { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' },
     { type: 'text', value: 'Creative Web Solutions' },
-    { type: 'link', value: 'contact@n-ull.com', href: 'mailto:contact@n-ull.com' },
     { type: 'text', value: 'Digital Products' },
     { type: 'text', value: 'Open Source' },
     { type: 'text', value: 'Based in Denmark' },
