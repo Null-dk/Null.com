@@ -1,0 +1,401 @@
+@import "tailwindcss";
+
+/* ============================================
+   Custom Theme Configuration
+   ============================================ */
+
+@theme {
+  --color-bg: #0a0a0a;
+  --color-bg-secondary: #111111;
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #999999;
+  --color-accent: #ffffff;
+  --color-accent-secondary: #cccccc;
+  --color-glass-bg: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glow: rgba(255, 255, 255, 0.2);
+
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-float: float 20s ease-in-out infinite;
+  --animate-glitch-1: glitch-anim-1 4s infinite linear alternate-reverse;
+  --animate-glitch-2: glitch-anim-2 3s infinite linear alternate-reverse;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+  --animate-ticker-scroll: ticker-scroll 40s linear infinite;
+  --animate-scanline: scanline 6s linear infinite;
+  --animate-cursor-blink: cursor-blink 1.2s ease-in-out infinite;
+  --animate-fade-in-up: fade-in-up 0.5s var(--ease-out-expo) backwards;
+  --animate-fade-in: fade-in 0.6s ease backwards;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* Background gradient */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -20%, rgba(255, 255, 255, 0.03), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 120%, rgba(255, 255, 255, 0.02), transparent),
+    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%);
+  z-index: -4;
+  pointer-events: none;
+}
+
+/* ============================================
+   Keyframe Animations
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -30px) scale(1.05); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(20px, 30px) scale(1.02); }
+}
+
+@keyframes glitch-anim-1 {
+  0%, 100% { opacity: 0; transform: translate3d(0, 0, 0); }
+  10% { opacity: 0.3; transform: translate3d(-2px, 1px, 0); }
+  20% { opacity: 0; transform: translate3d(2px, -1px, 0); }
+  30% { opacity: 0; }
+  40% { opacity: 0.2; transform: translate3d(-1px, 1px, 0); }
+  50% { opacity: 0; }
+}
+
+@keyframes glitch-anim-2 {
+  0%, 100% { opacity: 0; transform: translate3d(0, 0, 0); }
+  15% { opacity: 0.2; transform: translate3d(2px, -1px, 0); }
+  25% { opacity: 0; }
+  35% { opacity: 0.3; transform: translate3d(-2px, 1px, 0); }
+  45% { opacity: 0; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scanline {
+  0% { top: -2px; opacity: 0; }
+  5% { opacity: 0.4; }
+  95% { opacity: 0.4; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes cursor-blink {
+  0%, 45% { opacity: 1; }
+  50%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================
+   Background Grid
+   ============================================ */
+
+.bg-grid {
+  background-size: var(--grid-size, 24px) var(--grid-size, 24px);
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+}
+
+/* ============================================
+   Noise Texture
+   ============================================ */
+
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================
+   Glitch Text Effect
+   ============================================ */
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: "Null Incorporated";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--color-accent);
+}
+
+.glitch-text::before {
+  animation: glitch-anim-1 4s infinite linear alternate-reverse;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.glitch-text::after {
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  z-index: -2;
+  opacity: 0.2;
+}
+
+/* ============================================
+   Domain Card
+   ============================================ */
+
+.domain-card {
+  --card-glow: rgba(255, 255, 255, 0);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    0 0 60px -15px var(--card-glow);
+  transition:
+    transform 300ms var(--ease-out-expo),
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    background 300ms ease;
+}
+
+.domain-card::before,
+.domain-card::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--color-glass-border);
+  transition:
+    border-color 300ms ease,
+    opacity 300ms ease,
+    transform 300ms var(--ease-out-expo);
+  opacity: 0.5;
+}
+
+.domain-card::before {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.domain-card::after {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+}
+
+.card-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+  transition: left 0.6s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.domain-card:hover .card-shine {
+  left: 100%;
+}
+
+.domain-card:hover {
+  --card-glow: rgba(255, 255, 255, 0.08);
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 60px -15px var(--card-glow);
+}
+
+.domain-card:hover::before,
+.domain-card:hover::after {
+  border-color: var(--color-accent);
+  opacity: 1;
+}
+
+.domain-card:hover::before { transform: translate(-2px, -2px); }
+.domain-card:hover::after { transform: translate(2px, 2px); }
+
+.domain-card:active {
+  transform: translateY(-2px) scale(0.98);
+  transition-duration: 150ms;
+}
+
+.domain-card:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-accent),
+    0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.domain-card:hover .external-link-icon {
+  opacity: 0.6;
+  transform: translate(0, 0);
+}
+
+.domain-card:hover .domain-name-text {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.domain-card:hover .domain-explainer {
+  opacity: 1;
+}
+
+.domain-card:hover .card-index {
+  opacity: 0.6;
+}
+
+/* Placeholder cards */
+.placeholder-card {
+  opacity: 0.4;
+  cursor: default;
+  border-style: dashed;
+}
+
+.placeholder-card:hover {
+  transform: none;
+  border-color: var(--color-glass-border);
+  background: var(--color-glass-bg);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.placeholder-card:hover::before,
+.placeholder-card:hover::after {
+  border-color: var(--color-glass-border);
+  opacity: 0.5;
+  transform: none;
+}
+
+.placeholder-card:hover .card-shine {
+  left: -100%;
+}
+
+/* ============================================
+   Ticker Link underline
+   ============================================ */
+
+.ticker-link {
+  position: relative;
+}
+
+.ticker-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width 300ms var(--ease-out-expo);
+}
+
+.ticker-link:hover {
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.ticker-link:hover::after {
+  width: 100%;
+}
+
+/* ============================================
+   Scan Line
+   ============================================ */
+
+.scan-line {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* ============================================
+   Accessibility & Media Queries
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .ticker-track {
+    animation: none !important;
+  }
+
+  .scan-line {
+    display: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .domain-card {
+    border-width: 2px;
+  }
+}
+
+@media print {
+  .noise-overlay,
+  .scan-lines-wrapper,
+  .bg-grid,
+  .ticker-footer,
+  .status-bar-aside,
+  .bg-orb {
+    display: none;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .domain-card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}
