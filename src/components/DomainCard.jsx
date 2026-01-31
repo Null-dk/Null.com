@@ -3,10 +3,10 @@ import { useRef, useCallback } from 'react'
 const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-function ExternalLinkIcon() {
+function ArrowIcon() {
   return (
     <svg
-      className="external-link-icon shrink-0 w-4 h-4 opacity-0 translate-x-[-4px] translate-y-[4px] transition-all duration-300 ease-[var(--ease-out-expo)] text-text-secondary"
+      className="external-link-icon shrink-0 w-4 h-4 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all duration-300 ease-[var(--ease-out-expo)] text-text-secondary"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -15,9 +15,8 @@ function ExternalLinkIcon() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <polyline points="15 3 21 3 21 9" />
-      <line x1="10" y1="14" x2="21" y2="3" />
+      <line x1="7" y1="17" x2="17" y2="7" />
+      <polyline points="7 7 17 7 17 17" />
     </svg>
   )
 }
@@ -25,14 +24,14 @@ function ExternalLinkIcon() {
 function TerminalCursor() {
   return (
     <span
-      className="inline-block w-[2px] h-[1em] bg-accent ml-1 align-text-bottom animate-cursor-blink"
+      className="inline-block w-[2px] h-[0.9em] bg-accent ml-1 align-text-bottom animate-cursor-blink"
       style={{ boxShadow: '0 0 8px rgba(255, 255, 255, 0.4)' }}
       aria-hidden="true"
     />
   )
 }
 
-function DomainCard({ name, url, description, index, isPlaceholder, animationDelay, domainNameRef }) {
+function DomainCard({ name, url, description, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef }) {
   const cardRef = useRef(null)
 
   const handleMouseMove = useCallback((e) => {
@@ -60,28 +59,57 @@ function DomainCard({ name, url, description, index, isPlaceholder, animationDel
     if (card) card.style.transform = ''
   }, [])
 
-  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} bg-glass-bg border border-glass-border rounded-2xl py-7 px-6 relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up cursor-pointer max-sm:py-6 max-sm:px-5`
+  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} group/card bg-glass-bg border border-glass-border rounded-2xl relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up`
 
   const content = (
     <>
       <div className="card-shine" aria-hidden="true" />
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="font-mono text-[1.3rem] font-bold mb-1.5 relative text-accent leading-[1.3] break-words transition-colors duration-300 max-[480px]:text-[1.1rem]">
-          <span className="domain-name-text" ref={domainNameRef}>{name}</span>
-          <TerminalCursor />
-        </h2>
-        {url && <ExternalLinkIcon />}
-      </div>
-      {description && (
-        <p className="domain-explainer text-[0.8rem] text-text-secondary opacity-70 mt-2 leading-[1.4] transition-opacity duration-300 max-[480px]:text-[0.75rem]">
-          {description}
-        </p>
-      )}
-      {typeof index === 'number' && (
-        <span className="card-index absolute bottom-2.5 right-3.5 font-mono text-[0.65rem] text-text-secondary opacity-30 transition-opacity duration-300">
-          {String(index + 1).padStart(2, '0')}
+
+      {/* Card header with icon and tag */}
+      <div className="flex items-center justify-between px-6 pt-5 pb-0">
+        <span className="font-mono text-[0.7rem] text-text-secondary opacity-40 tracking-wider">
+          {icon && <span className="mr-1.5 text-accent/40">{icon}</span>}
+          {typeof index === 'number' ? `${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}` : null}
         </span>
-      )}
+        <div className="flex items-center gap-2">
+          {tag && (
+            <span className={`font-mono text-[0.6rem] tracking-wider uppercase px-2.5 py-1 rounded-full border ${
+              tag === 'Live' ? 'text-accent/70 border-white/10 bg-white/5' :
+              tag === 'Beta' ? 'text-accent-secondary/60 border-white/8 bg-white/3' :
+              'text-text-secondary/50 border-white/6 bg-white/2'
+            }`}>
+              {tag}
+            </span>
+          )}
+          {url && <ArrowIcon />}
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="px-6 pt-4 pb-6 flex-1 flex flex-col">
+        <h2 className="font-mono text-lg md:text-xl font-bold relative text-accent leading-tight break-words transition-colors duration-300">
+          <span className="domain-name-text" ref={domainNameRef}>{name}</span>
+          {!isPlaceholder && <TerminalCursor />}
+        </h2>
+        {description && (
+          <p className="domain-explainer text-[0.8rem] text-text-secondary opacity-50 mt-3 leading-relaxed transition-opacity duration-300 line-clamp-2">
+            {description}
+          </p>
+        )}
+      </div>
+
+      {/* Card footer line */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      <div className="px-6 py-3 flex items-center justify-between">
+        <span className="font-mono text-[0.6rem] text-text-secondary/40 tracking-wider">
+          {isPlaceholder ? 'TBD' : url?.replace('https://', '')}
+        </span>
+        {!isPlaceholder && (
+          <span className="font-mono text-[0.55rem] text-text-secondary/30 tracking-wider group-hover/card:text-text-secondary/50 transition-colors duration-300">
+            VISIT &rarr;
+          </span>
+        )}
+      </div>
     </>
   )
 

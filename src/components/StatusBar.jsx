@@ -1,23 +1,31 @@
-import { useUptime } from '../hooks/useUptime'
-
 function StatusBar() {
-  const uptime = useUptime()
-
   return (
-    <aside className="status-bar-aside fixed top-6 right-6 flex flex-col gap-2 z-100 animate-fade-in max-sm:top-4 max-sm:right-4" style={{ animationDelay: '0.4s' }} aria-label="System status">
-      <div className="flex items-center gap-2.5 bg-glass-bg border border-glass-border rounded-3xl py-2.5 px-4 font-mono text-[0.7rem] text-text-secondary backdrop-blur-[12px] tracking-[0.5px] transition-all duration-300 hover:border-white/15 hover:bg-white/5 max-sm:text-[0.65rem] max-sm:py-2 max-sm:px-3">
-        <span
-          className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-dot"
-          style={{ boxShadow: '0 0 8px rgba(255, 255, 255, 0.3)' }}
-          aria-hidden="true"
-        />
-        <span>SYSTEMS ONLINE</span>
+    <nav className="fixed top-0 left-0 right-0 z-100 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+      <div className="flex items-center justify-between px-5 sm:px-8 py-4 sm:py-5">
+        {/* Logo mark */}
+        <div className="flex items-center gap-2.5 font-mono text-[0.7rem] sm:text-xs text-text-secondary tracking-wider">
+          <span className="text-accent font-bold">N.</span>
+          <span className="opacity-40 hidden sm:inline">NULL INC</span>
+        </div>
+
+        {/* Right side links */}
+        <div className="flex items-center gap-4 sm:gap-6 font-mono text-[0.65rem] sm:text-[0.7rem] text-text-secondary tracking-wider">
+          <a
+            href="mailto:contact@n-ull.com"
+            className="opacity-40 hover:opacity-80 transition-opacity duration-300"
+          >
+            CONTACT
+          </a>
+          <span className="opacity-15 hidden sm:inline">|</span>
+          <a
+            href="https://n-ull.com"
+            className="opacity-40 hover:opacity-80 transition-opacity duration-300 hidden sm:inline"
+          >
+            N-ULL.COM
+          </a>
+        </div>
       </div>
-      <div className="flex items-center gap-2.5 bg-glass-bg border border-glass-border rounded-3xl py-2.5 px-4 font-mono text-[0.7rem] text-text-secondary backdrop-blur-[12px] tracking-[0.5px] transition-all duration-300 hover:border-white/15 hover:bg-white/5 max-sm:text-[0.65rem] max-sm:py-2 max-sm:px-3">
-        <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
-        <span>UPTIME: <span className="transition-opacity duration-150">{uptime}</span></span>
-      </div>
-    </aside>
+    </nav>
   )
 }
 

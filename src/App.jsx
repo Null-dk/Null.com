@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useRef, useCallback } from 'react'
 import BackgroundEffects from './components/BackgroundEffects'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
@@ -8,18 +8,40 @@ import { useMouseGridTracking } from './hooks/useMouseGridTracking'
 import { useGlitchEffect } from './hooks/useGlitchEffect'
 
 const domains = [
-  { name: 'circuit.menu', url: 'https://circuit.menu', description: 'Digital Menu Platform' },
-  { name: 'coolstorydidntask.com', url: 'https://coolstorydidntask.com', description: 'Testing' },
-  { name: 'obscurapdf.com', url: 'https://obscurapdf.com', description: 'PDF Tools' },
-  { name: 'mi6.tf', url: 'https://mi6.tf', description: null },
+  {
+    name: 'circuit.menu',
+    url: 'https://circuit.menu',
+    description: 'A modern digital menu platform for restaurants and cafes. Beautiful, fast, and easy to manage.',
+    tag: 'Live',
+    icon: '~',
+  },
+  {
+    name: 'coolstorydidntask.com',
+    url: 'https://coolstorydidntask.com',
+    description: 'Experimental playground for testing new web technologies and interaction patterns.',
+    tag: 'Beta',
+    icon: '>',
+  },
+  {
+    name: 'obscurapdf.com',
+    url: 'https://obscurapdf.com',
+    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely in the browser.',
+    tag: 'Live',
+    icon: '#',
+  },
+  {
+    name: 'mi6.tf',
+    url: 'https://mi6.tf',
+    description: 'Classified project. Details available on a need-to-know basis only.',
+    tag: 'Stealth',
+    icon: '!',
+  },
 ]
 
 const placeholders = [
-  { name: 'Coming soon', description: 'In development' },
-  { name: 'Coming soon', description: 'In development' },
+  { name: 'Coming soon', description: 'New project currently in development. Stay tuned for updates.', icon: '?' },
+  { name: 'Coming soon', description: 'Another project brewing in the lab. Check back later.', icon: '...' },
 ]
-
-const cardDelays = ['0.3s', '0.4s', '0.5s', '0.6s', '0.7s', '0.8s']
 
 function App() {
   const domainNameRefs = useRef([])
@@ -34,39 +56,55 @@ function App() {
     <>
       <BackgroundEffects />
 
-      <main className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-20 sm:px-5 md:pt-24 md:pb-20">
-        <Header />
+      <div className="min-h-screen flex flex-col">
+        <StatusBar />
 
-        <section
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-[1200px] w-[90%] mx-auto p-4 md:p-5 animate-fade-in-up"
-          style={{ animationDelay: '0.2s' }}
-          aria-label="Projects"
-        >
-          {domains.map((domain, index) => (
-            <DomainCard
-              key={domain.name}
-              name={domain.name}
-              url={domain.url}
-              description={domain.description}
-              index={index}
-              animationDelay={cardDelays[index]}
-              domainNameRef={setDomainNameRef(index)}
-            />
-          ))}
-          {placeholders.map((placeholder, index) => (
-            <DomainCard
-              key={`placeholder-${index}`}
-              name={placeholder.name}
-              description={placeholder.description}
-              isPlaceholder
-              animationDelay={cardDelays[domains.length + index]}
-            />
-          ))}
-        </section>
-      </main>
+        <main className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-28 md:py-32">
+          <Header />
 
-      <StatusBar />
-      <Ticker />
+          <section
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-[1100px] w-full mx-auto animate-fade-in-up"
+            style={{ animationDelay: '0.4s' }}
+            aria-label="Projects"
+          >
+            {domains.map((domain, index) => (
+              <DomainCard
+                key={domain.name}
+                name={domain.name}
+                url={domain.url}
+                description={domain.description}
+                tag={domain.tag}
+                icon={domain.icon}
+                index={index}
+                total={domains.length + placeholders.length}
+                animationDelay={`${0.5 + index * 0.1}s`}
+                domainNameRef={setDomainNameRef(index)}
+              />
+            ))}
+            {placeholders.map((placeholder, index) => (
+              <DomainCard
+                key={`placeholder-${index}`}
+                name={placeholder.name}
+                description={placeholder.description}
+                icon={placeholder.icon}
+                isPlaceholder
+                animationDelay={`${0.5 + (domains.length + index) * 0.1}s`}
+              />
+            ))}
+          </section>
+
+          <div
+            className="mt-12 md:mt-16 flex items-center gap-4 text-text-secondary text-xs font-mono tracking-wider opacity-40 animate-fade-in"
+            style={{ animationDelay: '1.2s' }}
+          >
+            <span className="h-px w-8 bg-white/20" />
+            <span>SCROLL FOR MORE</span>
+            <span className="h-px w-8 bg-white/20" />
+          </div>
+        </main>
+
+        <Ticker />
+      </div>
     </>
   )
 }

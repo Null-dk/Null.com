@@ -1,15 +1,20 @@
 function BackgroundEffects() {
   return (
     <>
-      {/* Animated orbs */}
+      {/* Animated orbs — larger, more diffuse */}
       <div
         className="bg-orb fixed rounded-full pointer-events-none -z-3 animate-float"
-        style={{ width: 400, height: 400, top: '-10%', left: '-5%', filter: 'blur(80px)', opacity: 0.4, background: 'radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%)' }}
+        style={{ width: 500, height: 500, top: '-15%', left: '-10%', filter: 'blur(100px)', opacity: 0.35, background: 'radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%)' }}
         aria-hidden="true"
       />
       <div
         className="bg-orb fixed rounded-full pointer-events-none -z-3 animate-float"
-        style={{ width: 300, height: 300, bottom: '-5%', right: '-5%', filter: 'blur(80px)', opacity: 0.4, background: 'radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%)', animationDelay: '-10s' }}
+        style={{ width: 400, height: 400, bottom: '-10%', right: '-10%', filter: 'blur(100px)', opacity: 0.3, background: 'radial-gradient(circle, rgba(255,255,255,0.04), transparent 70%)', animationDelay: '-10s' }}
+        aria-hidden="true"
+      />
+      <div
+        className="bg-orb fixed rounded-full pointer-events-none -z-3 animate-float hidden md:block"
+        style={{ width: 300, height: 300, top: '40%', right: '20%', filter: 'blur(120px)', opacity: 0.15, background: 'radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%)', animationDelay: '-5s' }}
         aria-hidden="true"
       />
 
