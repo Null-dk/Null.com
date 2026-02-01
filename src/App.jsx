@@ -52,6 +52,12 @@ function App() {
     domainNameRefs.current[index] = el
   }, [])
 
+  // Sort domains: Live/Beta first, then Offline, then placeholders
+  const sortedDomains = [...domains].sort((a, b) => {
+    const order = { Live: 0, Beta: 1, Offline: 2 }
+    return (order[a.tag] ?? 3) - (order[b.tag] ?? 3)
+  })
+
   return (
     <>
       <BackgroundEffects />
@@ -67,7 +73,7 @@ function App() {
             style={{ animationDelay: '0.4s' }}
             aria-label="Projects"
           >
-            {domains.map((domain, index) => (
+            {sortedDomains.map((domain, index) => (
               <DomainCard
                 key={domain.name}
                 name={domain.name}
@@ -76,7 +82,7 @@ function App() {
                 tag={domain.tag}
                 icon={domain.icon}
                 index={index}
-                total={domains.length + placeholders.length}
+                total={sortedDomains.length + placeholders.length}
                 animationDelay={`${0.5 + index * 0.1}s`}
                 domainNameRef={setDomainNameRef(index)}
               />
@@ -88,7 +94,7 @@ function App() {
                 description={placeholder.description}
                 icon={placeholder.icon}
                 isPlaceholder
-                animationDelay={`${0.5 + (domains.length + index) * 0.1}s`}
+                animationDelay={`${0.5 + (sortedDomains.length + index) * 0.1}s`}
               />
             ))}
           </section>
