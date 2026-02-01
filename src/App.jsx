@@ -23,18 +23,18 @@ const domains = [
     icon: '>',
   },
   {
-    name: 'obscurapdf.com',
-    url: 'https://obscurapdf.com',
-    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
-    tag: 'Live',
-    icon: '#',
-  },
-  {
     name: 'mi6.tf',
     url: 'https://mi6.tf',
     description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
     tag: 'Live',
     icon: '!',
+  },
+  {
+    name: 'obscurapdf.com',
+    url: 'https://obscurapdf.com',
+    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
+    tag: 'Live',
+    icon: '#',
   }
 ]
 
