@@ -36,6 +36,13 @@ const domains = [
     tag: 'Live',
     icon: '!',
   },
+  {
+    name: 'archived.project',
+    url: 'https://archived.project',
+    description: 'A previous project that is no longer actively maintained or hosted.',
+    tag: 'Offline',
+    icon: 'X',
+  },
 ]
 
 const placeholders = [

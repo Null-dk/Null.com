@@ -76,6 +76,7 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
             <span className={`font-mono text-[0.6rem] tracking-wider uppercase px-2.5 py-1 rounded-full border ${
               tag === 'Live' ? 'text-accent/70 border-white/10 bg-white/5' :
               tag === 'Beta' ? 'text-accent-secondary/60 border-white/8 bg-white/3' :
+              tag === 'Offline' ? 'text-red-400/70 border-red-900/30 bg-red-950/20' :
               'text-text-secondary/50 border-white/6 bg-white/2'
             }`}>
               {tag}
