@@ -12,7 +12,7 @@ const domains = [
     name: 'circuit.menu',
     url: 'https://circuit.menu',
     description: 'A GTA 5 mod menu. Feature-rich, regularly updated, and built for performance.',
-    tag: 'Live',
+    tag: 'offline',
     icon: '~',
   },
   {
@@ -35,14 +35,7 @@ const domains = [
     description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
     tag: 'Live',
     icon: '!',
-  },
-  {
-    name: 'archived.project',
-    url: 'https://archived.project',
-    description: 'A previous project that is no longer actively maintained or hosted.',
-    tag: 'Offline',
-    icon: 'X',
-  },
+  }
 ]
 
 const placeholders = [
