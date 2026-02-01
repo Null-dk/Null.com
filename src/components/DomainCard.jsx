@@ -34,15 +34,17 @@ function TerminalCursor() {
 function DomainCard({ name, url, description, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef }) {
   const cardRef = useRef(null)
 
+  const isOffline = tag === 'Offline'
+
   const handleMouseMove = useCallback((e) => {
-    if (isTouchDevice || prefersReducedMotion || isPlaceholder) return
+    if (isTouchDevice || prefersReducedMotion || isPlaceholder || isOffline) return
     const card = cardRef.current
     if (!card) return
     const rect = card.getBoundingClientRect()
     const x = (e.clientX - rect.left) / rect.width - 0.5
     const y = (e.clientY - rect.top) / rect.height - 0.5
     card.style.transform = `translateY(-6px) perspective(1000px) rotateX(${y * 4}deg) rotateY(${-x * 4}deg)`
-  }, [isPlaceholder])
+  }, [isPlaceholder, isOffline])
 
   const handleMouseLeave = useCallback(() => {
     const card = cardRef.current
@@ -51,15 +53,15 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
 
   const handleMouseDown = useCallback(() => {
     const card = cardRef.current
-    if (card && !isPlaceholder) card.style.transform = 'translateY(-2px) scale(0.98)'
-  }, [isPlaceholder])
+    if (card && !isPlaceholder && !isOffline) card.style.transform = 'translateY(-2px) scale(0.98)'
+  }, [isPlaceholder, isOffline])
 
   const handleMouseUp = useCallback(() => {
     const card = cardRef.current
     if (card) card.style.transform = ''
   }, [])
 
-  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} group/card bg-glass-bg border border-glass-border rounded-2xl relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up`
+  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} ${isOffline ? 'opacity-50 grayscale pointer-events-none' : ''} group/card bg-glass-bg border border-glass-border rounded-2xl relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up`
 
   const content = (
     <>
