@@ -39,7 +39,7 @@ const domains = [
   {
     name: 'justexplain.cv',
     url: 'https://justexplain.cv',
-    description: 'AI-powered explanations at the comprehension level you choose — from a 5-year-old to an expert.',
+    description: 'AI-powered explanations at the comprehension level you choose.',
     tag: 'Live',
     icon: '*',
   }
