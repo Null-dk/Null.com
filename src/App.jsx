@@ -35,6 +35,13 @@ const domains = [
     description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
     tag: 'Live',
     icon: '#',
+  },
+  {
+    name: 'justexplain.cv',
+    url: 'https://justexplain.cv',
+    description: 'AI-powered explanations at the comprehension level you choose — from a 5-year-old to an expert.',
+    tag: 'Live',
+    icon: '*',
   }
 ]
 
