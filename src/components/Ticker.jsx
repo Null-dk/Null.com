@@ -1,4 +1,6 @@
-function TickerContent() {
+import { useEffect, useRef, useState } from 'react'
+
+function TickerContent({ isClone = false }) {
   const items = [
     { type: 'text', value: 'Null Incorporated' },
     { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' },
@@ -17,6 +19,7 @@ function TickerContent() {
             <a
               href={item.href}
               className="ticker-link font-mono text-[0.75rem] text-accent/80 no-underline transition-all duration-300 whitespace-nowrap hover:text-accent"
+              tabIndex={isClone ? -1 : undefined}
             >
               {item.value}
             </a>
@@ -33,6 +36,30 @@ function TickerContent() {
 }
 
 function Ticker() {
+  const contentRef = useRef(null)
+  const [loopWidth, setLoopWidth] = useState(0)
+  const [chunkCount, setChunkCount] = useState(4)
+
+  useEffect(() => {
+    const measureTicker = () => {
+      const contentWidth = contentRef.current?.offsetWidth ?? 0
+      if (!contentWidth) return
+
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth
+      const requiredChunks = Math.max(4, Math.ceil(viewportWidth / contentWidth) + 2)
+
+      setLoopWidth((previousWidth) => (Math.abs(previousWidth - contentWidth) < 1 ? previousWidth : contentWidth))
+      setChunkCount((previousCount) => (previousCount === requiredChunks ? previousCount : requiredChunks))
+    }
+
+    measureTicker()
+    window.addEventListener('resize', measureTicker)
+
+    return () => {
+      window.removeEventListener('resize', measureTicker)
+    }
+  }, [])
+
   return (
     <footer
       className="ticker-footer fixed bottom-0 left-0 w-full border-t border-white/5 overflow-hidden backdrop-blur-[16px] z-50 animate-fade-in"
@@ -43,9 +70,20 @@ function Ticker() {
       aria-label="Company information"
     >
       <div className="py-3.5">
-        <div className="ticker-track flex w-max animate-ticker-scroll hover:[animation-play-state:paused]">
-          <TickerContent />
-          <TickerContent />
+        <div
+          className="ticker-track flex w-max animate-ticker-scroll hover:[animation-play-state:paused] will-change-transform"
+          style={{ '--ticker-loop-width': `${loopWidth || 0}px` }}
+        >
+          {Array.from({ length: chunkCount }, (_, index) => (
+            <div
+              key={`ticker-content-${index}`}
+              ref={index === 0 ? contentRef : null}
+              className="shrink-0"
+              aria-hidden={index > 0}
+            >
+              <TickerContent isClone={index > 0} />
+            </div>
+          ))}
         </div>
       </div>
     </footer>
