@@ -4,6 +4,7 @@ import Header from './components/Header'
 import DomainCard from './components/DomainCard'
 import StatusBar from './components/StatusBar'
 import Ticker from './components/Ticker'
+import About from './components/About'
 import { useMouseGridTracking } from './hooks/useMouseGridTracking'
 import { useGlitchEffect } from './hooks/useGlitchEffect'
 
@@ -136,6 +137,8 @@ function App() {
               />
             ))}
           </section>
+
+          <About />
         </main>
 
         <Ticker />
