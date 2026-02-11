@@ -101,7 +101,7 @@ body::before {
 
 @keyframes ticker-scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(calc(-1 * var(--ticker-loop-width, 50%))); }
 }
 
 @keyframes scanline {

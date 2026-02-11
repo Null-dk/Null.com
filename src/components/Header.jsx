@@ -34,7 +34,7 @@ function Header() {
         </div>
         <span className="text-white/10 hidden sm:inline">|</span>
         <div className="hidden sm:flex items-center gap-2">
-          <span className="opacity-60">5 PROJECTS</span>
+          <span className="opacity-60">6 PROJECTS</span>
         </div>
       </div>
     </header>

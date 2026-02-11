@@ -1,9 +1,10 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect, useState } from 'react'
 import BackgroundEffects from './components/BackgroundEffects'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
 import StatusBar from './components/StatusBar'
 import Ticker from './components/Ticker'
+import About from './components/About'
 import { useMouseGridTracking } from './hooks/useMouseGridTracking'
 import { useGlitchEffect } from './hooks/useGlitchEffect'
 
@@ -21,6 +22,13 @@ const domains = [
     description: 'Testing environment for testing projects before they go live. Public preview.',
     tag: 'Beta',
     icon: '>',
+  },
+  {
+    name: 'altraic.com',
+    url: 'https://altraic.com',
+    description: 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
+    tag: 'Beta',
+    icon: '&',
   },
   {
     name: 'mi6.tf',
@@ -52,6 +60,7 @@ const placeholders = [
 
 function App() {
   const domainNameRefs = useRef([])
+  const [showScrollHint, setShowScrollHint] = useState(false)
   useMouseGridTracking()
   useGlitchEffect(domainNameRefs)
 
@@ -65,6 +74,25 @@ function App() {
     return (order[a.tag] ?? 3) - (order[b.tag] ?? 3)
   })
 
+  useEffect(() => {
+    const updateScrollHint = () => {
+      const doc = document.documentElement
+      const maxScrollTop = doc.scrollHeight - window.innerHeight
+      const hasMoreContent = maxScrollTop > 48
+      const isNearBottom = window.scrollY >= maxScrollTop - 64
+      setShowScrollHint(hasMoreContent && !isNearBottom)
+    }
+
+    updateScrollHint()
+    window.addEventListener('resize', updateScrollHint)
+    window.addEventListener('scroll', updateScrollHint, { passive: true })
+
+    return () => {
+      window.removeEventListener('resize', updateScrollHint)
+      window.removeEventListener('scroll', updateScrollHint)
+    }
+  }, [])
+
   return (
     <>
       <BackgroundEffects />
@@ -74,6 +102,17 @@ function App() {
 
         <main className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-28 md:py-32">
           <Header />
+
+          {showScrollHint && (
+            <div
+              className="mb-10 md:mb-12 flex items-center gap-4 text-text-secondary text-xs font-mono tracking-wider opacity-40 animate-fade-in"
+              style={{ animationDelay: '1.2s' }}
+            >
+              <span className="h-px w-8 bg-white/20" />
+              <span>SCROLL FOR MORE</span>
+              <span className="h-px w-8 bg-white/20" />
+            </div>
+          )}
 
           <section
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-[1100px] w-full mx-auto animate-fade-in-up"
@@ -106,14 +145,7 @@ function App() {
             ))}
           </section>
 
-          <div
-            className="mt-12 md:mt-16 flex items-center gap-4 text-text-secondary text-xs font-mono tracking-wider opacity-40 animate-fade-in"
-            style={{ animationDelay: '1.2s' }}
-          >
-            <span className="h-px w-8 bg-white/20" />
-            <span>SCROLL FOR MORE</span>
-            <span className="h-px w-8 bg-white/20" />
-          </div>
+          <About />
         </main>
 
         <Ticker />
