@@ -24,6 +24,13 @@ const domains = [
     icon: '>',
   },
   {
+    name: 'altraic.com',
+    url: 'https://altraic.com',
+    description: 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
+    tag: 'Beta',
+    icon: '&',
+  },
+  {
     name: 'mi6.tf',
     url: 'https://mi6.tf',
     description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
