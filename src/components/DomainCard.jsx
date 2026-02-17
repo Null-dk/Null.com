@@ -62,6 +62,10 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
   }, [])
 
   const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} ${isOffline ? 'opacity-50 grayscale pointer-events-none' : ''} group/card bg-glass-bg border border-glass-border rounded-2xl relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up`
+  const cardStyle = {
+    animationDelay,
+    '--fade-in-up-opacity': isPlaceholder ? 0.4 : isOffline ? 0.5 : 1,
+  }
 
   const content = (
     <>
@@ -121,7 +125,7 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
       <div
         ref={cardRef}
         className={cardClasses}
-        style={{ animationDelay }}
+        style={cardStyle}
       >
         {content}
       </div>
@@ -135,7 +139,7 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
       target="_blank"
       rel="noopener noreferrer"
       className={cardClasses}
-      style={{ animationDelay }}
+      style={cardStyle}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseDown={handleMouseDown}
