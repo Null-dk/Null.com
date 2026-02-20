@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from 'react'
+import { useRef, useCallback, useEffect, useMemo, useState } from 'react'
 import BackgroundEffects from './components/BackgroundEffects'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
@@ -7,62 +7,68 @@ import Ticker from './components/Ticker'
 import About from './components/About'
 import { useMouseGridTracking } from './hooks/useMouseGridTracking'
 import { useGlitchEffect } from './hooks/useGlitchEffect'
+import { DEFAULT_LANGUAGE, getLanguageOptions, getLocaleCopy } from './i18n'
 
-const domains = [
+const domainMetadata = [
   {
     name: 'circuit.menu',
     url: 'https://circuit.menu',
-    description: 'A GTA 5 mod menu. Feature-rich, regularly updated, and built for performance.',
     tag: 'Offline',
     icon: '~',
   },
   {
     name: 'coolstorydidntask.com',
     url: 'https://coolstorydidntask.com',
-    description: 'Testing environment for testing projects before they go live. Public preview.',
     tag: 'Beta',
     icon: '>',
   },
   {
     name: 'altraic.com',
     url: 'https://altraic.com',
-    description: 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
     tag: 'Beta',
     icon: '&',
   },
   {
     name: 'mi6.tf',
     url: 'https://mi6.tf',
-    description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
     tag: 'Live',
     icon: '!',
   },
   {
     name: 'obscurapdf.com',
     url: 'https://obscurapdf.com',
-    description: 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
     tag: 'Live',
     icon: '#',
   },
   {
     name: 'justexplain.cv',
     url: 'https://justexplain.cv',
-    description: 'AI-powered explanations at the comprehension level you choose.',
     tag: 'Live',
     icon: '*',
   }
 ]
 
-const placeholders = [
-  { name: 'Coming soon', description: 'New project currently in development. Stay tuned for updates.', icon: '?' },
-  { name: 'Coming soon', description: 'Another project brewing in the lab. Check back later.', icon: '...' },
-]
-
 function App() {
   const domainNameRefs = useRef([])
   const [showScrollHint, setShowScrollHint] = useState(false)
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_LANGUAGE
+    return localStorage.getItem('preferred-language') || DEFAULT_LANGUAGE
+  })
+  const copy = useMemo(() => getLocaleCopy(language).copy, [language])
+  const languageOptions = useMemo(() => getLanguageOptions(), [])
   useMouseGridTracking()
   useGlitchEffect(domainNameRefs)
+
+  const domains = domainMetadata.map((domain) => ({
+    ...domain,
+    description: copy.domains[domain.name],
+  }))
+
+  const placeholders = [
+    { name: copy.domainCard.tbd, description: copy.placeholders[0], icon: '?' },
+    { name: copy.domainCard.tbd, description: copy.placeholders[1], icon: '...' },
+  ]
 
   const setDomainNameRef = useCallback((index) => (el) => {
     domainNameRefs.current[index] = el
@@ -93,15 +99,25 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    document.documentElement.lang = language
+    localStorage.setItem('preferred-language', language)
+  }, [language])
+
   return (
     <>
       <BackgroundEffects />
 
       <div className="min-h-screen flex flex-col">
-        <StatusBar />
+        <StatusBar
+          copy={copy.statusBar}
+          language={language}
+          languageOptions={languageOptions}
+          onLanguageChange={setLanguage}
+        />
 
         <main className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8 py-24 sm:py-28 md:py-32">
-          <Header />
+          <Header copy={copy.header} projectCount={domains.length} />
 
           {showScrollHint && (
             <div
@@ -109,7 +125,7 @@ function App() {
               style={{ animationDelay: '1.2s' }}
             >
               <span className="h-px w-8 bg-white/20" />
-              <span>SCROLL FOR MORE</span>
+              <span>{copy.app.scrollForMore}</span>
               <span className="h-px w-8 bg-white/20" />
             </div>
           )}
@@ -117,7 +133,7 @@ function App() {
           <section
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-[1100px] w-full mx-auto animate-fade-in-up"
             style={{ animationDelay: '0.4s' }}
-            aria-label="Projects"
+            aria-label={copy.app.projectsAria}
           >
             {sortedDomains.map((domain, index) => (
               <DomainCard
@@ -131,6 +147,7 @@ function App() {
                 total={sortedDomains.length + placeholders.length}
                 animationDelay={`${0.5 + index * 0.1}s`}
                 domainNameRef={setDomainNameRef(index)}
+                copy={copy.domainCard}
               />
             ))}
             {placeholders.map((placeholder, index) => (
@@ -141,14 +158,15 @@ function App() {
                 icon={placeholder.icon}
                 isPlaceholder
                 animationDelay={`${0.5 + (sortedDomains.length + index) * 0.1}s`}
+                copy={copy.domainCard}
               />
             ))}
           </section>
 
-          <About />
+          <About copy={copy.about} />
         </main>
 
-        <Ticker />
+        <Ticker copy={copy.ticker} />
       </div>
     </>
   )

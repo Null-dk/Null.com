@@ -1,4 +1,4 @@
-function About() {
+function About({ copy }) {
   const socialLinks = [
     {
       name: 'GitHub',
@@ -36,12 +36,12 @@ function About() {
     <section
       className="max-w-[1100px] w-full mx-auto mt-24 md:mt-32 animate-fade-in-up"
       style={{ animationDelay: '0.8s' }}
-      aria-label="Social"
+      aria-label={copy.sectionAria}
     >
       <div className="flex items-center gap-4 mb-10">
         <span className="h-px flex-1 bg-white/10" />
         <span className="font-mono text-[0.65rem] tracking-[6px] text-text-secondary uppercase opacity-40">
-          Social
+          {copy.heading}
         </span>
         <span className="h-px flex-1 bg-white/10" />
       </div>
@@ -49,10 +49,10 @@ function About() {
       <div className="domain-card group relative p-8 md:p-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-mono text-sm font-bold text-accent tracking-tight opacity-50">
-            // social
+            {copy.cardTitle}
           </h2>
           <span className="font-mono text-[0.6rem] tracking-wider text-text-secondary/35 uppercase">
-            02 links
+            {copy.linksCount}
           </span>
         </div>
 
