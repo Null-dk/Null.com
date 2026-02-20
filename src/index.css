@@ -25,7 +25,6 @@
   --animate-glitch-2: glitch-anim-2 3s infinite linear alternate-reverse;
   --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
   --animate-ticker-scroll: ticker-scroll 40s linear infinite;
-  --animate-scanline: scanline 6s linear infinite;
   --animate-cursor-blink: cursor-blink 1.2s ease-in-out infinite;
   --animate-fade-in-up: fade-in-up 0.5s var(--ease-out-expo) backwards;
   --animate-fade-in: fade-in 0.6s ease backwards;
@@ -45,15 +44,15 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Background gradient */
+/* Background gradient — deep field with central lift */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 20% -20%, rgba(255, 255, 255, 0.03), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 120%, rgba(255, 255, 255, 0.02), transparent),
-    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%);
+    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 70%),
+    linear-gradient(160deg, #0d0d0d 0%, #080808 50%, #0c0c0c 100%);
   z-index: -4;
   pointer-events: none;
 }
@@ -104,13 +103,6 @@ body::before {
   100% { transform: translateX(calc(-1 * var(--ticker-loop-width, 50%))); }
 }
 
-@keyframes scanline {
-  0% { top: -2px; opacity: 0; }
-  5% { opacity: 0.4; }
-  95% { opacity: 0.4; }
-  100% { top: 100%; opacity: 0; }
-}
-
 @keyframes cursor-blink {
   0%, 45% { opacity: 1; }
   50%, 95% { opacity: 0; }
@@ -127,17 +119,9 @@ body::before {
   to { opacity: 1; }
 }
 
-/* ============================================
-   Background Grid
-   ============================================ */
-
-.bg-grid {
-  background-size: var(--grid-size, 24px) var(--grid-size, 24px);
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+/* Corner vignette — pulls focus inward */
+.bg-vignette {
+  background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 /* ============================================
@@ -344,14 +328,6 @@ body::before {
 }
 
 /* ============================================
-   Scan Line
-   ============================================ */
-
-.scan-line {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-}
-
-/* ============================================
    Accessibility & Media Queries
    ============================================ */
 
@@ -367,10 +343,6 @@ body::before {
   .ticker-track {
     animation: none !important;
   }
-
-  .scan-line {
-    display: none;
-  }
 }
 
 @media (prefers-contrast: high) {
@@ -381,8 +353,7 @@ body::before {
 
 @media print {
   .noise-overlay,
-  .scan-lines-wrapper,
-  .bg-grid,
+  .bg-vignette,
   .ticker-footer,
   .status-bar-aside,
   .bg-orb {

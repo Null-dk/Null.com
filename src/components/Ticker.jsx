@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-function TickerContent({ isClone = false }) {
-  const items = [
-    { type: 'text', value: 'Null Incorporated' },
-    { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' },
-    { type: 'text', value: 'Creative Web Solutions' },
-    { type: 'text', value: 'Digital Products' },
-  ]
-
+function TickerContent({ isClone = false, items }) {
   return (
     <div className="flex items-center gap-0 pr-0">
       {items.map((item, i) => (
@@ -35,7 +28,7 @@ function TickerContent({ isClone = false }) {
   )
 }
 
-function Ticker() {
+function Ticker({ copy }) {
   const contentRef = useRef(null)
   const [loopWidth, setLoopWidth] = useState(0)
   const [chunkCount, setChunkCount] = useState(4)
@@ -67,7 +60,7 @@ function Ticker() {
         background: 'linear-gradient(180deg, rgba(10,10,10,0.6), rgba(10,10,10,0.95))',
         animationDelay: '0.8s',
       }}
-      aria-label="Company information"
+      aria-label={copy.aria}
     >
       <div className="py-3.5">
         <div
@@ -81,7 +74,7 @@ function Ticker() {
               className="shrink-0"
               aria-hidden={index > 0}
             >
-              <TickerContent isClone={index > 0} />
+              <TickerContent isClone={index > 0} items={copy.items} />
             </div>
           ))}
         </div>

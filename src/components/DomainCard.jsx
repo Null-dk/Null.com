@@ -31,7 +31,7 @@ function TerminalCursor() {
   )
 }
 
-function DomainCard({ name, url, description, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef }) {
+function DomainCard({ name, url, description, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef, copy }) {
   const cardRef = useRef(null)
 
   const isOffline = tag === 'Offline'
@@ -109,11 +109,11 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/8 to-transparent" />
       <div className="px-6 py-3 flex items-center justify-between">
         <span className="font-mono text-[0.6rem] text-text-secondary/40 tracking-wider">
-          {isPlaceholder ? 'TBD' : url?.replace('https://', '')}
+          {isPlaceholder ? copy.tbd : url?.replace('https://', '')}
         </span>
         {!isPlaceholder && (
           <span className="font-mono text-[0.55rem] text-text-secondary/30 tracking-wider group-hover/card:text-text-secondary/50 transition-colors duration-300">
-            VISIT &rarr;
+            {copy.visit} &rarr;
           </span>
         )}
       </div>
