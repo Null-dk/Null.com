@@ -45,6 +45,12 @@ const domainMetadata = [
     url: 'https://justexplain.cv',
     tag: 'Live',
     icon: '*',
+  },
+  {
+    name: 'fxlive.cc',
+    url: 'https://fxlive.cc',
+    tag: 'Live',
+    icon: '$',
   }
 ]
 
@@ -56,13 +62,14 @@ function App() {
     return localStorage.getItem('preferred-language') || DEFAULT_LANGUAGE
   })
   const copy = useMemo(() => getLocaleCopy(language).copy, [language])
+  const defaultCopy = useMemo(() => getLocaleCopy(DEFAULT_LANGUAGE).copy, [])
   const languageOptions = useMemo(() => getLanguageOptions(), [])
   useMouseGridTracking()
   useGlitchEffect(domainNameRefs)
 
   const domains = domainMetadata.map((domain) => ({
     ...domain,
-    description: copy.domains[domain.name],
+    description: copy.domains[domain.name] ?? defaultCopy.domains[domain.name],
   }))
 
   const placeholders = [
