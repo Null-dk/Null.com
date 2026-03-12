@@ -51,6 +51,12 @@ const domainMetadata = [
     url: 'https://fxlive.cc',
     tag: 'Live',
     icon: '$',
+  },
+  {
+    name: 'n-ulllabs.com',
+    url: 'https://n-ulllabs.com',
+    tag: 'Beta',
+    icon: '%',
   }
 ]
 

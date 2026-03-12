@@ -6,6 +6,7 @@
   'obscurapdf.com': 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
   'justexplain.cv': 'AI-powered explanations at the comprehension level you choose.',
   'fxlive.cc': 'Real-time currency converter with live FX rates, short-term charts, and ticker history.',
+  'n-ulllabs.com': 'Video dubbing tool for generating translated voiceovers quickly.',
 }
 
 const basePlaceholders = [
