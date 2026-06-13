@@ -119,6 +119,13 @@ body::before {
   to { opacity: 1; }
 }
 
+@keyframes censored-scan {
+  0%, 18% { transform: translateX(-110%); opacity: 0; }
+  30% { opacity: 0.65; }
+  55% { transform: translateX(110%); opacity: 0.3; }
+  100% { transform: translateX(110%); opacity: 0; }
+}
+
 /* Corner vignette — pulls focus inward */
 .bg-vignette {
   background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
@@ -269,6 +276,81 @@ body::before {
 
 .domain-card:hover .domain-explainer {
   opacity: 1;
+}
+
+.domain-explainer-censored {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.35rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 8px,
+      rgba(255, 255, 255, 0.015) 8px,
+      rgba(255, 255, 255, 0.015) 16px
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.015),
+    0 0 18px rgba(255, 255, 255, 0.03);
+}
+
+.domain-explainer-censored::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.14) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: censored-scan 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.domain-explainer-censored::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.14)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07) 0,
+      rgba(255, 255, 255, 0.07) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.domain-explainer-censored-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.14);
+  filter: blur(2.8px);
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.18),
+    0 0 18px rgba(255, 255, 255, 0.05);
+  user-select: none;
+}
+
+.domain-card:hover .domain-explainer-censored {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 0 24px rgba(255, 255, 255, 0.05);
+}
+
+.domain-card:hover .domain-explainer-censored-text {
+  filter: blur(3.4px);
 }
 
 .domain-card:hover .card-index {

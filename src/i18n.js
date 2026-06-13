@@ -2,6 +2,7 @@
   'circuit.menu': 'A GTA 5 mod menu. Feature-rich, regularly updated, and built for performance.',
   'coolstorydidntask.com': 'Testing environment for testing projects before they go live. Public preview.',
   'altraic.com': 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
+  'vistraic.com': 'Private beta project. Public details are intentionally hidden until launch.',
   'mi6.tf': 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
   'obscurapdf.com': 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
   'justexplain.cv': 'AI-powered explanations at the comprehension level you choose.',

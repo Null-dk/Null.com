@@ -29,6 +29,14 @@ const domainMetadata = [
     icon: '&',
   },
   {
+    name: 'vistraic.com',
+    url: 'https://vistraic.com',
+    description: 'Private beta. Public details are intentionally hidden until launch.',
+    tag: 'Beta',
+    icon: '+',
+    hideDescription: true,
+  },
+  {
     name: 'mi6.tf',
     url: 'https://mi6.tf',
     tag: 'Live',
@@ -75,7 +83,7 @@ function App() {
 
   const domains = domainMetadata.map((domain) => ({
     ...domain,
-    description: copy.domains[domain.name] ?? defaultCopy.domains[domain.name],
+    description: domain.description ?? copy.domains[domain.name] ?? defaultCopy.domains[domain.name],
   }))
 
   const placeholders = [
@@ -154,6 +162,7 @@ function App() {
                 name={domain.name}
                 url={domain.url}
                 description={domain.description}
+                hideDescription={domain.hideDescription}
                 tag={domain.tag}
                 icon={domain.icon}
                 index={index}
