@@ -1,8 +1,6 @@
 ﻿const baseDomains = {
-  'circuit.menu': 'A GTA 5 mod menu. Feature-rich, regularly updated, and built for performance.',
-  'coolstorydidntask.com': 'Testing environment for testing projects before they go live. Public preview.',
   'altraic.com': 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
-  'vistraic.com': 'Private beta project. Public details are intentionally hidden until launch.',
+  'vistraic.com': 'Automated Minecraft bot.',
   'mi6.tf': 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
   'obscurapdf.com': 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
   'justexplain.cv': 'AI-powered explanations at the comprehension level you choose.',
@@ -72,8 +70,6 @@ const translations = {
       ],
     },
     domains: {
-      'circuit.menu': 'Et GTA 5 mod-menu. Funktionsrigt, regelmÃ¦ssigt opdateret og bygget til ydeevne.',
-      'coolstorydidntask.com': 'TestmiljÃ¸ til projekter fÃ¸r de gÃ¥r live. Offentlig forhÃ¥ndsvisning.',
       'altraic.com': 'Tidlig adgangs-landingpage til Altraic, med offentlig venteliste fÃ¸r lancering.',
       'mi6.tf': 'URL-forkorter og midlertidig filhosting. Hurtig, enkel og flygtig.',
       'obscurapdf.com': 'Privatlivsfokuserede PDF-vÃ¦rktÃ¸jer. SlÃ¸r, krypter og behandl dokumenter sikkert.',
@@ -93,8 +89,6 @@ const translations = {
     about: { sectionAria: 'Sozial', heading: 'Sozial', cardTitle: '// social', linksCount: '02 links' },
     ticker: { aria: 'Unternehmensinformationen', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Kreative WeblÃ¶sungen' }, { type: 'text', value: 'Digitale Produkte' }] },
     domains: {
-      'circuit.menu': 'Ein GTA 5 Mod-Menu. Funktionsreich, regelmaessig aktualisiert und auf Leistung ausgelegt.',
-      'coolstorydidntask.com': 'Testumgebung fuer Projekte, bevor sie live gehen. Oeffentliche Vorschau.',
       'altraic.com': 'Early-Access-Landingpage fuer Altraic mit oeffentlicher Warteliste vor dem Start.',
       'mi6.tf': 'URL-Kuerzer und temporaeres File-Hosting. Schnell, einfach und kurzlebig.',
       'obscurapdf.com': 'Datenschutzorientierte PDF-Tools. Schwarzen, verschluesseln und Dokumente sicher verarbeiten.',
@@ -114,8 +108,6 @@ const translations = {
     about: { sectionAria: 'Social', heading: 'Social', cardTitle: '// social', linksCount: '02 liens' },
     ticker: { aria: 'Informations sur lâ€™entreprise', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Solutions web crÃ©atives' }, { type: 'text', value: 'Produits numÃ©riques' }] },
     domains: {
-      'circuit.menu': 'Un menu mod GTA 5. Riche en fonctionnalites, regulierement mis a jour et optimise pour la performance.',
-      'coolstorydidntask.com': 'Environnement de test pour les projets avant mise en ligne. Apercu public.',
       'altraic.com': 'Page d acces anticipe a Altraic avec liste d attente publique avant lancement.',
       'mi6.tf': 'Raccourcisseur d URL et hebergement temporaire de fichiers. Rapide, simple et ephemere.',
       'obscurapdf.com': 'Outils PDF axes sur la confidentialite. Masquer, chiffrer et traiter des documents en securite.',
@@ -135,8 +127,6 @@ const translations = {
     about: { sectionAria: 'Social', heading: 'Social', cardTitle: '// social', linksCount: '02 enlaces' },
     ticker: { aria: 'InformaciÃ³n de la empresa', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Soluciones web creativas' }, { type: 'text', value: 'Productos digitales' }] },
     domains: {
-      'circuit.menu': 'Un menu mod para GTA 5. Completo, actualizado con frecuencia y optimizado para rendimiento.',
-      'coolstorydidntask.com': 'Entorno de pruebas para proyectos antes de salir en produccion. Vista previa publica.',
       'altraic.com': 'Landing page de acceso anticipado para Altraic con lista de espera publica antes del lanzamiento.',
       'mi6.tf': 'Acortador de URL y alojamiento temporal de archivos. Rapido, simple y efimero.',
       'obscurapdf.com': 'Herramientas PDF centradas en la privacidad. Redacta, cifra y procesa documentos de forma segura.',
@@ -156,8 +146,6 @@ const translations = {
     about: { sectionAria: 'Social', heading: 'Social', cardTitle: '// social', linksCount: '02 link' },
     ticker: { aria: 'Informazioni aziendali', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Soluzioni web creative' }, { type: 'text', value: 'Prodotti digitali' }] },
     domains: {
-      'circuit.menu': 'Un menu mod per GTA 5. Ricco di funzionalita, aggiornato regolarmente e ottimizzato per le prestazioni.',
-      'coolstorydidntask.com': 'Ambiente di test per i progetti prima della messa online. Anteprima pubblica.',
       'altraic.com': 'Landing page in accesso anticipato per Altraic con lista d attesa pubblica prima del lancio.',
       'mi6.tf': 'Accorciatore URL e hosting temporaneo di file. Veloce, semplice ed effimero.',
       'obscurapdf.com': 'Strumenti PDF orientati alla privacy. Oscura, cifra ed elabora documenti in modo sicuro.',
@@ -177,8 +165,6 @@ const translations = {
     about: { sectionAria: 'Social', heading: 'Social', cardTitle: '// social', linksCount: '02 links' },
     ticker: { aria: 'InformaÃ§Ãµes da empresa', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'SoluÃ§Ãµes web criativas' }, { type: 'text', value: 'Produtos digitais' }] },
     domains: {
-      'circuit.menu': 'Um menu mod para GTA 5. Rico em recursos, atualizado regularmente e otimizado para desempenho.',
-      'coolstorydidntask.com': 'Ambiente de testes para projetos antes de irem ao ar. Previa publica.',
       'altraic.com': 'Landing page de acesso antecipado para Altraic com lista de espera publica antes do lancamento.',
       'mi6.tf': 'Encurtador de URL e hospedagem temporaria de arquivos. Rapido, simples e efemero.',
       'obscurapdf.com': 'Ferramentas PDF focadas em privacidade. Redija, criptografe e processe documentos com seguranca.',
@@ -198,8 +184,6 @@ const translations = {
     about: { sectionAria: 'Sociaal', heading: 'Sociaal', cardTitle: '// social', linksCount: '02 links' },
     ticker: { aria: 'Bedrijfsinformatie', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Creatieve weboplossingen' }, { type: 'text', value: 'Digitale producten' }] },
     domains: {
-      'circuit.menu': 'Een GTA 5 mod-menu. Functierijk, regelmatig bijgewerkt en gebouwd voor prestaties.',
-      'coolstorydidntask.com': 'Testomgeving voor projecten voordat ze live gaan. Openbare preview.',
       'altraic.com': 'Early-access landingspagina voor Altraic met openbare wachtlijst voor lancering.',
       'mi6.tf': 'URL-verkorter en tijdelijke bestandsopslag. Snel, simpel en tijdelijk.',
       'obscurapdf.com': 'Privacygerichte PDF-tools. Redigeer, versleutel en verwerk documenten veilig.',
@@ -219,8 +203,6 @@ const translations = {
     about: { sectionAria: 'Socialt', heading: 'Socialt', cardTitle: '// social', linksCount: '02 lÃ¤nkar' },
     ticker: { aria: 'FÃ¶retagsinformation', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Kreativa webblÃ¶sningar' }, { type: 'text', value: 'Digitala produkter' }] },
     domains: {
-      'circuit.menu': 'En GTA 5 mod-meny. Funktionsrik, uppdateras regelbundet och byggd for prestanda.',
-      'coolstorydidntask.com': 'Testmiljo for projekt innan de gar live. Offentlig forhandsvisning.',
       'altraic.com': 'Landningssida med tidig tillgang for Altraic med offentlig vantelista innan lansering.',
       'mi6.tf': 'URL-forkortare och tillfallig filhosting. Snabb, enkel och tillfallig.',
       'obscurapdf.com': 'Integritetsfokuserade PDF-verktyg. Maskera, kryptera och behandla dokument sakert.',
@@ -240,8 +222,6 @@ const translations = {
     about: { sectionAria: 'Sosialt', heading: 'Sosialt', cardTitle: '// social', linksCount: '02 lenker' },
     ticker: { aria: 'Bedriftsinformasjon', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Kreative nettlÃ¸sninger' }, { type: 'text', value: 'Digitale produkter' }] },
     domains: {
-      'circuit.menu': 'En GTA 5 mod-meny. Funksjonsrik, jevnlig oppdatert og bygget for ytelse.',
-      'coolstorydidntask.com': 'Testmiljo for prosjekter for de gar live. Offentlig forhandsvisning.',
       'altraic.com': 'Tidlig tilgangs-landingsside for Altraic med offentlig venteliste for lansering.',
       'mi6.tf': 'URL-forkorter og midlertidig filhosting. Rask, enkel og flyktig.',
       'obscurapdf.com': 'Personvernfokuserte PDF-verktoy. Sladd, krypter og behandle dokumenter trygt.',
@@ -261,8 +241,6 @@ const translations = {
     about: { sectionAria: 'Sosiaalinen', heading: 'Sosiaalinen', cardTitle: '// social', linksCount: '02 linkkiÃ¤' },
     ticker: { aria: 'Yritystiedot', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Luovat verkkoratkaisut' }, { type: 'text', value: 'Digitaaliset tuotteet' }] },
     domains: {
-      'circuit.menu': 'GTA 5 -modivalikko. Ominaisuuksiltaan laaja, saannollisesti paivitetty ja suorituskykyyn rakennettu.',
-      'coolstorydidntask.com': 'Testiymparisto projekteille ennen julkaisua. Julkinen esikatselu.',
       'altraic.com': 'Altraicin early-access-laskeutumissivu julkisella jonotuslistalla ennen julkaisua.',
       'mi6.tf': 'URL-lyhentaja ja valiaikainen tiedostohotelli. Nopea, yksinkertainen ja tilapainen.',
       'obscurapdf.com': 'Yksityisyyspainotteiset PDF-tyokalut. Peita, salaa ja kasittele dokumentteja turvallisesti.',
@@ -282,8 +260,6 @@ const translations = {
     about: { sectionAria: 'SpoÅ‚ecznoÅ›ci', heading: 'Social', cardTitle: '// social', linksCount: '02 linki' },
     ticker: { aria: 'Informacje o firmie', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Kreatywne rozwiÄ…zania webowe' }, { type: 'text', value: 'Produkty cyfrowe' }] },
     domains: {
-      'circuit.menu': 'Menu moda do GTA 5. Bogate funkcje, regularne aktualizacje i nastawienie na wydajnosc.',
-      'coolstorydidntask.com': 'Srodowisko testowe dla projektow przed wdrozeniem. Publiczny podglad.',
       'altraic.com': 'Strona early-access dla Altraic z publiczna lista oczekujacych przed startem.',
       'mi6.tf': 'Skrot URL i tymczasowy hosting plikow. Szybko, prosto i efemerycznie.',
       'obscurapdf.com': 'Narzedia PDF z naciskiem na prywatnosc. Redaguj, szyfruj i bezpiecznie przetwarzaj dokumenty.',
@@ -303,8 +279,6 @@ const translations = {
     about: { sectionAria: 'SociÃ¡lnÃ­', heading: 'SociÃ¡lnÃ­', cardTitle: '// social', linksCount: '02 odkazy' },
     ticker: { aria: 'Informace o spoleÄnosti', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'KreativnÃ­ webovÃ¡ Å™eÅ¡enÃ­' }, { type: 'text', value: 'DigitÃ¡lnÃ­ produkty' }] },
     domains: {
-      'circuit.menu': 'GTA 5 mod menu. Bohate na funkce, pravidelne aktualizovane a postavene na vykon.',
-      'coolstorydidntask.com': 'Testovaci prostredi pro projekty pred spustenim. Verejny nahled.',
       'altraic.com': 'Early-access landing page pro Altraic s verejnym waiting listem pred spustenim.',
       'mi6.tf': 'Zkracovac URL a docasny hosting souboru. Rychly, jednoduchy a efemerni.',
       'obscurapdf.com': 'PDF nastroje zamene na soukromi. Zacernuj, sifruj a bezpecne zpracuj dokumenty.',
@@ -324,8 +298,6 @@ const translations = {
     about: { sectionAria: 'Sosyal', heading: 'Sosyal', cardTitle: '// social', linksCount: '02 baÄŸlantÄ±' },
     ticker: { aria: 'Åžirket bilgileri', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'YaratÄ±cÄ± web Ã§Ã¶zÃ¼mleri' }, { type: 'text', value: 'Dijital Ã¼rÃ¼nler' }] },
     domains: {
-      'circuit.menu': 'Bir GTA 5 mod menusu. Ozellik acisindan zengin, duzenli guncellenen ve performans odakli.',
-      'coolstorydidntask.com': 'Projeler yayina alinmadan once test ortami. Herkese acik onizleme.',
       'altraic.com': 'Altraic icin lansman oncesi herkese acik bekleme listesi olan erken erisim sayfasi.',
       'mi6.tf': 'URL kisaltici ve gecici dosya barindirma hizmeti. Hizli, basit ve gecici.',
       'obscurapdf.com': 'Gizlilik odakli PDF araclari. Belgeleri sansurleyin, sifreleyin ve guvenli sekilde isleyin.',
@@ -345,8 +317,6 @@ const translations = {
     about: { sectionAria: 'Social', heading: 'Social', cardTitle: '// social', linksCount: '02 linkuri' },
     ticker: { aria: 'InformaÈ›ii despre companie', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'SoluÈ›ii web creative' }, { type: 'text', value: 'Produse digitale' }] },
     domains: {
-      'circuit.menu': 'Un meniu mod pentru GTA 5. Bogat in functii, actualizat regulat si construit pentru performanta.',
-      'coolstorydidntask.com': 'Mediu de test pentru proiecte inainte de lansare. Preview public.',
       'altraic.com': 'Pagina de acces timpuriu pentru Altraic, cu lista publica de asteptare inainte de lansare.',
       'mi6.tf': 'Scurtator de URL si gazduire temporara de fisiere. Rapid, simplu si efemer.',
       'obscurapdf.com': 'Instrumente PDF axate pe confidentialitate. Redacteaza, cripteaza si proceseaza documente in siguranta.',
@@ -366,8 +336,6 @@ const translations = {
     about: { sectionAria: 'Ð¡Ð¾Ñ†ÑÐµÑ‚Ð¸', heading: 'Ð¡Ð¾Ñ†ÑÐµÑ‚Ð¸', cardTitle: '// social', linksCount: '02 ÑÑÑ‹Ð»ÐºÐ¸' },
     ticker: { aria: 'Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾ ÐºÐ¾Ð¼Ð¿Ð°Ð½Ð¸Ð¸', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'ÐšÑ€ÐµÐ°Ñ‚Ð¸Ð²Ð½Ñ‹Ðµ Ð²ÐµÐ±-Ñ€ÐµÑˆÐµÐ½Ð¸Ñ' }, { type: 'text', value: 'Ð¦Ð¸Ñ„Ñ€Ð¾Ð²Ñ‹Ðµ Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ñ‹' }] },
     domains: {
-      'circuit.menu': 'ÐœÐ¾Ð´-Ð¼ÐµÐ½ÑŽ Ð´Ð»Ñ GTA 5. Ð‘Ð¾Ð³Ð°Ñ‚Ñ‹Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¾Ð½Ð°Ð», Ñ€ÐµÐ³ÑƒÐ»ÑÑ€Ð½Ñ‹Ðµ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ Ð¸ ÑƒÐ¿Ð¾Ñ€ Ð½Ð° Ð¿Ñ€Ð¾Ð¸Ð·Ð²Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ.',
-      'coolstorydidntask.com': 'Ð¢ÐµÑÑ‚Ð¾Ð²Ð°Ñ ÑÑ€ÐµÐ´Ð° Ð´Ð»Ñ Ð¿Ñ€Ð¾ÐµÐºÑ‚Ð¾Ð² Ð¿ÐµÑ€ÐµÐ´ Ñ€ÐµÐ»Ð¸Ð·Ð¾Ð¼. ÐŸÑƒÐ±Ð»Ð¸Ñ‡Ð½Ñ‹Ð¹ Ð¿Ñ€ÐµÐ´Ð¿Ñ€Ð¾ÑÐ¼Ð¾Ñ‚Ñ€.',
       'altraic.com': 'Ð›ÐµÐ½Ð´Ð¸Ð½Ð³ Ñ€Ð°Ð½Ð½ÐµÐ³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð° Ð´Ð»Ñ Altraic Ñ Ð¿ÑƒÐ±Ð»Ð¸Ñ‡Ð½Ñ‹Ð¼ Ð»Ð¸ÑÑ‚Ð¾Ð¼ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð¿ÐµÑ€ÐµÐ´ Ð·Ð°Ð¿ÑƒÑÐºÐ¾Ð¼.',
       'mi6.tf': 'Ð¡Ð¾ÐºÑ€Ð°Ñ‰Ð°Ñ‚ÐµÐ»ÑŒ URL Ð¸ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ð¹ Ñ…Ð¾ÑÑ‚Ð¸Ð½Ð³ Ñ„Ð°Ð¹Ð»Ð¾Ð². Ð‘Ñ‹ÑÑ‚Ñ€Ð¾, Ð¿Ñ€Ð¾ÑÑ‚Ð¾ Ð¸ ÑÑ„ÐµÐ¼ÐµÑ€Ð½Ð¾.',
       'obscurapdf.com': 'PDF-Ð¸Ð½ÑÑ‚Ñ€ÑƒÐ¼ÐµÐ½Ñ‚Ñ‹ Ñ Ñ„Ð¾ÐºÑƒÑÐ¾Ð¼ Ð½Ð° Ð¿Ñ€Ð¸Ð²Ð°Ñ‚Ð½Ð¾ÑÑ‚ÑŒ. Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€ÑƒÐ¹Ñ‚Ðµ, ÑˆÐ¸Ñ„Ñ€ÑƒÐ¹Ñ‚Ðµ Ð¸ Ð¾Ð±Ñ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°Ð¹Ñ‚Ðµ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ñ‹ Ð±ÐµÐ·Ð¾Ð¿Ð°ÑÐ½Ð¾.',
@@ -387,8 +355,6 @@ const translations = {
     about: { sectionAria: 'Ð¡Ð¾Ñ†Ð¼ÐµÑ€ÐµÐ¶Ñ–', heading: 'Ð¡Ð¾Ñ†Ð¼ÐµÑ€ÐµÐ¶Ñ–', cardTitle: '// social', linksCount: '02 Ð¿Ð¾ÑÐ¸Ð»Ð°Ð½Ð½Ñ' },
     ticker: { aria: 'Ð†Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ñ–Ñ Ð¿Ñ€Ð¾ ÐºÐ¾Ð¼Ð¿Ð°Ð½Ñ–ÑŽ', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'ÐšÑ€ÐµÐ°Ñ‚Ð¸Ð²Ð½Ñ– Ð²ÐµÐ±-Ñ€Ñ–ÑˆÐµÐ½Ð½Ñ' }, { type: 'text', value: 'Ð¦Ð¸Ñ„Ñ€Ð¾Ð²Ñ– Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¸' }] },
     domains: {
-      'circuit.menu': 'ÐœÐ¾Ð´-Ð¼ÐµÐ½ÑŽ Ð´Ð»Ñ GTA 5. Ð‘Ð°Ð³Ð°Ñ‚Ð¾ Ñ„ÑƒÐ½ÐºÑ†Ñ–Ð¹, Ñ€ÐµÐ³ÑƒÐ»ÑÑ€Ð½Ñ– Ð¾Ð½Ð¾Ð²Ð»ÐµÐ½Ð½Ñ Ñ‚Ð° Ð°ÐºÑ†ÐµÐ½Ñ‚ Ð½Ð° Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¸Ð²Ð½Ñ–ÑÑ‚ÑŒ.',
-      'coolstorydidntask.com': 'Ð¢ÐµÑÑ‚Ð¾Ð²Ðµ ÑÐµÑ€ÐµÐ´Ð¾Ð²Ð¸Ñ‰Ðµ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ñ”ÐºÑ‚Ñ–Ð² Ð¿ÐµÑ€ÐµÐ´ Ð·Ð°Ð¿ÑƒÑÐºÐ¾Ð¼. ÐŸÑƒÐ±Ð»Ñ–Ñ‡Ð½Ð¸Ð¹ Ð¿Ð¾Ð¿ÐµÑ€ÐµÐ´Ð½Ñ–Ð¹ Ð¿ÐµÑ€ÐµÐ³Ð»ÑÐ´.',
       'altraic.com': 'Ð¡Ñ‚Ð¾Ñ€Ñ–Ð½ÐºÐ° Ñ€Ð°Ð½Ð½ÑŒÐ¾Ð³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ñƒ Ð´Ð»Ñ Altraic Ð· Ð¿ÑƒÐ±Ð»Ñ–Ñ‡Ð½Ð¸Ð¼ ÑÐ¿Ð¸ÑÐºÐ¾Ð¼ Ð¾Ñ‡Ñ–ÐºÑƒÐ²Ð°Ð½Ð½Ñ Ð¿ÐµÑ€ÐµÐ´ Ð·Ð°Ð¿ÑƒÑÐºÐ¾Ð¼.',
       'mi6.tf': 'Ð¡ÐºÐ¾Ñ€Ð¾Ñ‡ÑƒÐ²Ð°Ñ‡ URL Ñ– Ñ‚Ð¸Ð¼Ñ‡Ð°ÑÐ¾Ð²Ð¸Ð¹ Ñ„Ð°Ð¹Ð»Ð¾Ð²Ð¸Ð¹ Ñ…Ð¾ÑÑ‚Ð¸Ð½Ð³. Ð¨Ð²Ð¸Ð´ÐºÐ¾, Ð¿Ñ€Ð¾ÑÑ‚Ð¾ Ð¹ ÐµÑ„ÐµÐ¼ÐµÑ€Ð½Ð¾.',
       'obscurapdf.com': 'PDF-Ñ–Ð½ÑÑ‚Ñ€ÑƒÐ¼ÐµÐ½Ñ‚Ð¸ Ð· Ñ„Ð¾ÐºÑƒÑÐ¾Ð¼ Ð½Ð° Ð¿Ñ€Ð¸Ð²Ð°Ñ‚Ð½Ñ–ÑÑ‚ÑŒ. Ð ÐµÐ´Ð°Ð³ÑƒÐ¹Ñ‚Ðµ, ÑˆÐ¸Ñ„Ñ€ÑƒÐ¹Ñ‚Ðµ Ð¹ Ð±ÐµÐ·Ð¿ÐµÑ‡Ð½Ð¾ Ð¾Ð±Ñ€Ð¾Ð±Ð»ÑÐ¹Ñ‚Ðµ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¸.',
@@ -408,8 +374,6 @@ const translations = {
     about: { sectionAria: 'ã‚½ãƒ¼ã‚·ãƒ£ãƒ«', heading: 'ã‚½ãƒ¼ã‚·ãƒ£ãƒ«', cardTitle: '// social', linksCount: '02 ãƒªãƒ³ã‚¯' },
     ticker: { aria: 'ä¼šç¤¾æƒ…å ±', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'ã‚¯ãƒªã‚¨ã‚¤ãƒ†ã‚£ãƒ–ãªWebã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³' }, { type: 'text', value: 'ãƒ‡ã‚¸ã‚¿ãƒ«è£½å“' }] },
     domains: {
-      'circuit.menu': 'GTA 5å‘ã‘ã®MODãƒ¡ãƒ‹ãƒ¥ãƒ¼ã€‚æ©Ÿèƒ½ãŒè±Šå¯Œã§ã€å®šæœŸæ›´æ–°ã•ã‚Œã€ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹é‡è¦–ã§ã™ã€‚',
-      'coolstorydidntask.com': 'æœ¬ç•ªå…¬é–‹å‰ã«ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¤œè¨¼ã™ã‚‹ãŸã‚ã®ãƒ†ã‚¹ãƒˆç’°å¢ƒã€‚å…¬é–‹ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã€‚',
       'altraic.com': 'Altraicã®æ—©æœŸã‚¢ã‚¯ã‚»ã‚¹ç”¨ãƒ©ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒšãƒ¼ã‚¸ã€‚å…¬é–‹å‰ã«å…¬é–‹ã‚¦ã‚§ã‚¤ãƒˆãƒªã‚¹ãƒˆã‚’é‹ç”¨ä¸­ã€‚',
       'mi6.tf': 'URLçŸ­ç¸®ã¨ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ãƒ›ã‚¹ãƒ†ã‚£ãƒ³ã‚°ã‚µãƒ¼ãƒ“ã‚¹ã€‚é«˜é€Ÿãƒ»ã‚·ãƒ³ãƒ—ãƒ«ãƒ»ä¸€æ™‚çš„ã€‚',
       'obscurapdf.com': 'ãƒ—ãƒ©ã‚¤ãƒã‚·ãƒ¼é‡è¦–ã®PDFãƒ„ãƒ¼ãƒ«ã€‚å¢¨æ¶ˆã—ã€æš—å·åŒ–ã€å®‰å…¨ãªæ–‡æ›¸å‡¦ç†ã€‚',
@@ -429,8 +393,6 @@ const translations = {
     about: { sectionAria: 'ì†Œì…œ', heading: 'ì†Œì…œ', cardTitle: '// social', linksCount: '02 ë§í¬' },
     ticker: { aria: 'íšŒì‚¬ ì •ë³´', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'ì°½ì˜ì ì¸ ì›¹ ì†”ë£¨ì…˜' }, { type: 'text', value: 'ë””ì§€í„¸ ì œí’ˆ' }] },
     domains: {
-      'circuit.menu': 'GTA 5 ëª¨ë“œ ë©”ë‰´ìž…ë‹ˆë‹¤. ê¸°ëŠ¥ì´ í’ë¶€í•˜ê³  ì •ê¸°ì ìœ¼ë¡œ ì—…ë°ì´íŠ¸ë˜ë©° ì„±ëŠ¥ì— ìµœì í™”ë˜ì–´ ìžˆìŠµë‹ˆë‹¤.',
-      'coolstorydidntask.com': 'í”„ë¡œì íŠ¸ë¥¼ ë¼ì´ë¸Œ ì „ì— ê²€ì¦í•˜ëŠ” í…ŒìŠ¤íŠ¸ í™˜ê²½ìž…ë‹ˆë‹¤. ê³µê°œ í”„ë¦¬ë·°.',
       'altraic.com': 'Altraicì˜ ì–¼ë¦¬ ì•¡ì„¸ìŠ¤ ëžœë”© íŽ˜ì´ì§€ë¡œ, ì¶œì‹œ ì „ ê³µê°œ ëŒ€ê¸°ìž ëª…ë‹¨ì„ ìš´ì˜ ì¤‘ìž…ë‹ˆë‹¤.',
       'mi6.tf': 'URL ë‹¨ì¶• ë° ìž„ì‹œ íŒŒì¼ í˜¸ìŠ¤íŒ… ì„œë¹„ìŠ¤. ë¹ ë¥´ê³  ë‹¨ìˆœí•˜ë©° ì¼ì‹œì ìž…ë‹ˆë‹¤.',
       'obscurapdf.com': 'ê°œì¸ì •ë³´ ì¤‘ì‹¬ PDF ë„êµ¬. ë¬¸ì„œë¥¼ ê°€ë¦¬ê³ , ì•”í˜¸í™”í•˜ê³ , ì•ˆì „í•˜ê²Œ ì²˜ë¦¬í•©ë‹ˆë‹¤.',
@@ -450,8 +412,6 @@ const translations = {
     about: { sectionAria: 'ç¤¾äº¤', heading: 'ç¤¾äº¤', cardTitle: '// social', linksCount: '02 ä¸ªé“¾æŽ¥' },
     ticker: { aria: 'å…¬å¸ä¿¡æ¯', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'åˆ›æ„ç½‘é¡µè§£å†³æ–¹æ¡ˆ' }, { type: 'text', value: 'æ•°å­—äº§å“' }] },
     domains: {
-      'circuit.menu': 'ä¸€æ¬¾ GTA 5 æ¨¡ç»„èœå•ã€‚åŠŸèƒ½ä¸°å¯Œã€æŒç»­æ›´æ–°ï¼Œå¹¶é’ˆå¯¹æ€§èƒ½ä¼˜åŒ–ã€‚',
-      'coolstorydidntask.com': 'é¡¹ç›®ä¸Šçº¿å‰çš„æµ‹è¯•çŽ¯å¢ƒã€‚å…¬å¼€é¢„è§ˆã€‚',
       'altraic.com': 'Altraic çš„æ—©æœŸè®¿é—®è½åœ°é¡µï¼Œå½“å‰åœ¨æ­£å¼å‘å¸ƒå‰å¼€æ”¾å…¬å¼€å€™è¡¥åå•ã€‚',
       'mi6.tf': 'URL ç¼©çŸ­ä¸Žä¸´æ—¶æ–‡ä»¶æ‰˜ç®¡æœåŠ¡ã€‚å¿«é€Ÿã€ç®€å•ã€çŸ­æœŸã€‚',
       'obscurapdf.com': 'æ³¨é‡éšç§çš„ PDF å·¥å…·ã€‚å¯è¿›è¡Œæ¶‚é»‘ã€åŠ å¯†å¹¶å®‰å…¨å¤„ç†æ–‡æ¡£ã€‚',
@@ -471,8 +431,6 @@ const translations = {
     about: { sectionAria: 'Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠ', heading: 'Ø§Ø¬ØªÙ…Ø§Ø¹ÙŠ', cardTitle: '// social', linksCount: '02 Ø±ÙˆØ§Ø¨Ø·' },
     ticker: { aria: 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø´Ø±ÙƒØ©', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'Ø­Ù„ÙˆÙ„ ÙˆÙŠØ¨ Ø¥Ø¨Ø¯Ø§Ø¹ÙŠØ©' }, { type: 'text', value: 'Ù…Ù†ØªØ¬Ø§Øª Ø±Ù‚Ù…ÙŠØ©' }] },
     domains: {
-      'circuit.menu': 'Ù‚Ø§Ø¦Ù…Ø© ØªØ¹Ø¯ÙŠÙ„ Ù„Ù€ GTA 5. ØºÙ†ÙŠØ© Ø¨Ø§Ù„Ù…ÙŠØ²Ø§ØªØŒ ØªÙØ­Ø¯Ù‘ÙŽØ« Ø¨Ø§Ø³ØªÙ…Ø±Ø§Ø± ÙˆÙ…Ø¨Ù†ÙŠØ© Ù„Ù„Ø£Ø¯Ø§Ø¡.',
-      'coolstorydidntask.com': 'Ø¨ÙŠØ¦Ø© Ø§Ø®ØªØ¨Ø§Ø± Ù„Ù„Ù…Ø´Ø§Ø±ÙŠØ¹ Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚. Ù…Ø¹Ø§ÙŠÙ†Ø© Ø¹Ø§Ù…Ø©.',
       'altraic.com': 'ØµÙØ­Ø© ÙˆØµÙˆÙ„ Ù…Ø¨ÙƒØ± Ù„Ù€ Altraic Ù…Ø¹ Ù‚Ø§Ø¦Ù…Ø© Ø§Ù†ØªØ¸Ø§Ø± Ø¹Ø§Ù…Ø© Ù‚Ø¨Ù„ Ø§Ù„Ø¥Ø·Ù„Ø§Ù‚.',
       'mi6.tf': 'Ù…Ø®ØªØµØ± Ø±ÙˆØ§Ø¨Ø· ÙˆØ®Ø¯Ù…Ø© Ø§Ø³ØªØ¶Ø§ÙØ© Ù…Ù„ÙØ§Øª Ù…Ø¤Ù‚ØªØ©. Ø³Ø±ÙŠØ¹ ÙˆØ¨Ø³ÙŠØ· ÙˆÙ…Ø¤Ù‚Øª.',
       'obscurapdf.com': 'Ø£Ø¯ÙˆØ§Øª PDF ØªØ±ÙƒØ² Ø¹Ù„Ù‰ Ø§Ù„Ø®ØµÙˆØµÙŠØ©. ØªÙ†Ù‚ÙŠØ­ ÙˆØªØ´ÙÙŠØ± ÙˆÙ…Ø¹Ø§Ù„Ø¬Ø© Ø¢Ù…Ù†Ø© Ù„Ù„Ù…Ø³ØªÙ†Ø¯Ø§Øª.',
@@ -492,8 +450,6 @@ const translations = {
     about: { sectionAria: 'à¤¸à¥‹à¤¶à¤²', heading: 'à¤¸à¥‹à¤¶à¤²', cardTitle: '// social', linksCount: '02 à¤²à¤¿à¤‚à¤•' },
     ticker: { aria: 'à¤•à¤‚à¤ªà¤¨à¥€ à¤œà¤¾à¤¨à¤•à¤¾à¤°à¥€', items: [{ type: 'text', value: 'Null Incorporated' }, { type: 'link', value: 'n-ull.com', href: 'https://n-ull.com' }, { type: 'text', value: 'à¤°à¤šà¤¨à¤¾à¤¤à¥à¤®à¤• à¤µà¥‡à¤¬ à¤¸à¤®à¤¾à¤§à¤¾à¤¨' }, { type: 'text', value: 'à¤¡à¤¿à¤œà¤¿à¤Ÿà¤² à¤‰à¤¤à¥à¤ªà¤¾à¤¦' }] },
     domains: {
-      'circuit.menu': 'GTA 5 à¤•à¥‡ à¤²à¤¿à¤ à¤à¤• à¤®à¥‰à¤¡ à¤®à¥‡à¤¨à¥‚à¥¤ à¤«à¥€à¤šà¤°-à¤¸à¤®à¥ƒà¤¦à¥à¤§, à¤¨à¤¿à¤¯à¤®à¤¿à¤¤ à¤…à¤ªà¤¡à¥‡à¤Ÿà¥‡à¤¡ à¤”à¤° à¤ªà¥à¤°à¤¦à¤°à¥à¤¶à¤¨ à¤•à¥‡ à¤²à¤¿à¤ à¤¬à¤¨à¤¾à¤¯à¤¾ à¤—à¤¯à¤¾à¥¤',
-      'coolstorydidntask.com': 'à¤ªà¥à¤°à¥‹à¤œà¥‡à¤•à¥à¤Ÿ à¤²à¤¾à¤‡à¤µ à¤¹à¥‹à¤¨à¥‡ à¤¸à¥‡ à¤ªà¤¹à¤²à¥‡ à¤Ÿà¥‡à¤¸à¥à¤Ÿ à¤•à¤°à¤¨à¥‡ à¤•à¤¾ à¤µà¤¾à¤¤à¤¾à¤µà¤°à¤£à¥¤ à¤ªà¤¬à¥à¤²à¤¿à¤• à¤ªà¥à¤°à¥€à¤µà¥à¤¯à¥‚à¥¤',
       'altraic.com': 'Altraic à¤•à¥‡ à¤²à¤¿à¤ à¤…à¤°à¥à¤²à¥€-à¤à¤•à¥à¤¸à¥‡à¤¸ à¤²à¥ˆà¤‚à¤¡à¤¿à¤‚à¤— à¤ªà¥‡à¤œ, à¤²à¥‰à¤¨à¥à¤š à¤¸à¥‡ à¤ªà¤¹à¤²à¥‡ à¤¸à¤¾à¤°à¥à¤µà¤œà¤¨à¤¿à¤• à¤µà¥‡à¤Ÿà¤²à¤¿à¤¸à¥à¤Ÿ à¤•à¥‡ à¤¸à¤¾à¤¥à¥¤',
       'mi6.tf': 'URL à¤¶à¥‰à¤°à¥à¤Ÿà¤¨à¤° à¤”à¤° à¤…à¤¸à¥à¤¥à¤¾à¤¯à¥€ à¤«à¤¾à¤‡à¤² à¤¹à¥‹à¤¸à¥à¤Ÿà¤¿à¤‚à¤— à¤¸à¥‡à¤µà¤¾à¥¤ à¤¤à¥‡à¤œ, à¤¸à¤°à¤² à¤”à¤° à¤…à¤¸à¥à¤¥à¤¾à¤¯à¥€à¥¤',
       'obscurapdf.com': 'à¤ªà¥à¤°à¤¾à¤‡à¤µà¥‡à¤¸à¥€-à¤•à¥‡à¤‚à¤¦à¥à¤°à¤¿à¤¤ PDF à¤Ÿà¥‚à¤²à¥à¤¸à¥¤ à¤°à¤¿à¤¡à¥ˆà¤•à¥à¤Ÿ à¤•à¤°à¥‡à¤‚, à¤à¤¨à¥à¤•à¥à¤°à¤¿à¤ªà¥à¤Ÿ à¤•à¤°à¥‡à¤‚ à¤”à¤° à¤¦à¤¸à¥à¤¤à¤¾à¤µà¥‡à¤œà¤¼ à¤¸à¥à¤°à¤•à¥à¤·à¤¿à¤¤ à¤°à¥‚à¤ª à¤¸à¥‡ à¤ªà¥à¤°à¥‹à¤¸à¥‡à¤¸ à¤•à¤°à¥‡à¤‚à¥¤',

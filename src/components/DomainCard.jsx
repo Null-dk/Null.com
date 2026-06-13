@@ -31,7 +31,7 @@ function TerminalCursor() {
   )
 }
 
-function DomainCard({ name, url, description, hideDescription, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef, copy }) {
+function DomainCard({ name, url, description, tag, icon, index, total, isPlaceholder, animationDelay, domainNameRef, copy }) {
   const cardRef = useRef(null)
 
   const isOffline = tag === 'Offline'
@@ -99,16 +99,8 @@ function DomainCard({ name, url, description, hideDescription, tag, icon, index,
           {!isPlaceholder && <TerminalCursor />}
         </h2>
         {description && (
-          <p
-            className={`domain-explainer text-[0.8rem] text-text-secondary opacity-50 mt-3 leading-relaxed transition-opacity duration-300 line-clamp-2 ${hideDescription ? 'domain-explainer-censored' : ''}`}
-            aria-label={hideDescription ? 'Description hidden until launch' : undefined}
-            data-text={hideDescription ? description : undefined}
-          >
-            {hideDescription ? (
-              <span className="domain-explainer-censored-text">{description}</span>
-            ) : (
-              description
-            )}
+          <p className="domain-explainer text-[0.8rem] text-text-secondary opacity-50 mt-3 leading-relaxed transition-opacity duration-300 line-clamp-2">
+            {description}
           </p>
         )}
       </div>
