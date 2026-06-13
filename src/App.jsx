@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useMemo, useState } from 'react'
 import BackgroundEffects from './components/BackgroundEffects'
+import GlassDefs from './components/GlassDefs'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
 import StatusBar from './components/StatusBar'
@@ -114,6 +115,7 @@ function App() {
 
   return (
     <>
+      <GlassDefs />
       <BackgroundEffects />
 
       <div className="min-h-screen flex flex-col">

@@ -15,6 +15,18 @@
   --color-glass-border: rgba(255, 255, 255, 0.08);
   --color-glow: rgba(255, 255, 255, 0.2);
 
+  /* Liquid-glass material (strictly monochrome) */
+  --glass-blur: 16px;
+  --glass-saturate: 150%;
+  --glass-tint-top: rgba(255, 255, 255, 0.07);
+  --glass-tint-bottom: rgba(255, 255, 255, 0.02);
+  --glass-rim: rgba(255, 255, 255, 0.22);
+  --glass-wall: rgba(255, 255, 255, 0.07);
+  --glass-shade: rgba(0, 0, 0, 0.5);
+  --glass-cast: rgba(0, 0, 0, 0.55);
+  --glass-specular: rgba(255, 255, 255, 0.14);
+  --glass-radius: 1.4rem;
+
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', sans-serif;
 
@@ -167,25 +179,147 @@ body::before {
 }
 
 /* ============================================
+   Liquid Glass Material
+   ============================================ */
+
+/* Reusable curved-glass surface: frost + top-lit tint + rim light + depth.
+   Cross-browser (no SVG required). The refraction layer is added on top
+   only in Chromium via .refraction-on (see useLiquidGlass). */
+.glass-surface {
+  position: relative;
+  isolation: isolate;
+  border: none;
+  border-radius: var(--glass-radius);
+  background:
+    linear-gradient(150deg, var(--glass-tint-top) 0%, var(--glass-tint-bottom) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px var(--glass-wall),
+    inset 0 -10px 22px -14px var(--glass-shade),
+    0 12px 40px -8px var(--glass-cast);
+}
+
+/* Specular highlight — soft light catching the curved top-left edge */
+.glass-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 80% at 18% 0%, var(--glass-specular) 0%, transparent 45%);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 300ms ease, background-position 400ms var(--ease-out-expo);
+}
+
+.glass-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Diagonal specular sweep (reworked from .card-shine) */
+.glass-specular-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-specular-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent
+  );
+  transform: skewX(-12deg);
+  transition: left 0.7s var(--ease-out-expo);
+}
+
+/* Reduced transparency — opaque fallback, no blur */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface {
+    background: #141414;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-surface::before { opacity: 0.3; }
+}
+
+/* ============================================
    Domain Card
    ============================================ */
 
+/* Glass material applied directly (card keeps its ::before/::after for
+   corner brackets, so its specular lives on the .glass-specular-sweep child). */
 .domain-card {
-  --card-glow: rgba(255, 255, 255, 0);
+  position: relative;
+  isolation: isolate;
+  border: none;
+  border-radius: var(--glass-radius);
+  background:
+    linear-gradient(150deg, var(--glass-tint-top) 0%, var(--glass-tint-bottom) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.2),
-    0 0 60px -15px var(--card-glow);
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px var(--glass-wall),
+    inset 0 -10px 22px -14px var(--glass-shade),
+    0 12px 40px -8px var(--glass-cast);
   transition:
     transform 300ms var(--ease-out-expo),
-    border-color 300ms ease,
     box-shadow 300ms ease,
     background 300ms ease;
 }
 
+/* Card content sits above the specular/sweep layer; brackets (::before/::after) above that */
+.domain-card > * {
+  position: relative;
+  z-index: 1;
+}
+.domain-card > .glass-specular-sweep {
+  z-index: 0;
+}
+
+/* Static specular highlight + moving sweep live on the child layer */
+.glass-specular-sweep::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(130% 90% at 16% -10%, var(--glass-specular) 0%, transparent 50%);
+  opacity: 0.6;
+  transition: opacity 300ms ease;
+}
+
+.domain-card:hover .glass-specular-sweep::before {
+  opacity: 1;
+}
+
+.domain-card:hover .glass-specular-sweep::after {
+  left: 130%;
+}
+
+/* Corner brackets — part of the terminal identity */
 .domain-card::before,
 .domain-card::after {
   content: '';
   position: absolute;
+  z-index: 2;
   width: 12px;
   height: 12px;
   border: 1px solid var(--color-glass-border);
@@ -210,29 +344,18 @@ body::before {
   border-top: none;
 }
 
-.card-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-  transition: left 0.6s var(--ease-out-expo);
-  pointer-events: none;
-}
-
-.domain-card:hover .card-shine {
-  left: 100%;
-}
-
 .domain-card:hover {
-  --card-glow: rgba(255, 255, 255, 0.08);
+  --glass-rim: rgba(255, 255, 255, 0.35);
+  --glass-cast: rgba(0, 0, 0, 0.6);
   transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.035) 100%);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 60px -15px var(--card-glow);
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -10px 22px -14px var(--glass-shade),
+    0 24px 56px -12px var(--glass-cast),
+    0 0 60px -15px rgba(255, 255, 255, 0.08);
 }
 
 .domain-card:hover::before,
@@ -251,8 +374,8 @@ body::before {
 
 .domain-card:focus-visible {
   outline: none;
-  border-color: var(--color-accent);
   box-shadow:
+    inset 0 0 0 1px var(--glass-wall),
     0 0 0 2px var(--color-bg),
     0 0 0 4px var(--color-accent),
     0 20px 40px rgba(0, 0, 0, 0.3);
@@ -275,18 +398,27 @@ body::before {
   opacity: 0.6;
 }
 
-/* Placeholder cards */
+/* Placeholder cards — flatter, no lift, dashed brackets */
 .placeholder-card {
   opacity: 0.4;
   cursor: default;
+  background: var(--color-glass-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-wall),
+    0 8px 24px -12px rgba(0, 0, 0, 0.4);
+}
+
+.placeholder-card::before,
+.placeholder-card::after {
   border-style: dashed;
 }
 
 .placeholder-card:hover {
   transform: none;
-  border-color: var(--color-glass-border);
   background: var(--color-glass-bg);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-wall),
+    0 8px 24px -12px rgba(0, 0, 0, 0.4);
 }
 
 .placeholder-card:hover::before,
@@ -294,6 +426,15 @@ body::before {
   border-color: var(--color-glass-border);
   opacity: 0.5;
   transform: none;
+}
+
+/* Reduced transparency — opaque card fallback */
+@media (prefers-reduced-transparency: reduce) {
+  .domain-card {
+    background: #141414;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .placeholder-card:hover .card-shine {

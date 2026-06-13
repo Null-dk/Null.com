@@ -109,11 +109,12 @@ function LanguagePicker({ language, languageOptions, onLanguageChange }) {
           style={{
             width: '120px',
             maxHeight: '224px',
-            background: 'rgba(10,10,10,0.96)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+            borderRadius: '0.9rem',
+            background: 'rgba(12,12,12,0.82)',
+            backdropFilter: 'blur(16px) saturate(150%)',
+            WebkitBackdropFilter: 'blur(16px) saturate(150%)',
+            boxShadow:
+              'inset 0 1px 0 rgba(255,255,255,0.18), inset 0 0 0 1px rgba(255,255,255,0.08), 0 16px 40px -8px rgba(0,0,0,0.6)',
             animation: 'lang-panel-in 0.12s ease-out forwards',
           }}
         >
@@ -173,9 +174,9 @@ function LanguagePicker({ language, languageOptions, onLanguageChange }) {
 
 function StatusBar({ copy, language, languageOptions, onLanguageChange }) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-100 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-      <div className="flex items-center justify-between px-5 sm:px-8 py-4 sm:py-5">
-        <div className="font-mono text-[0.7rem] sm:text-xs text-text-secondary tracking-wider opacity-40">
+    <nav className="fixed top-0 left-0 right-0 z-100 animate-fade-in px-4 sm:px-6 pt-3 sm:pt-4" style={{ animationDelay: '0.2s' }}>
+      <div className="glass-surface mx-auto max-w-[1100px] flex items-center justify-between gap-4 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full">
+        <div className="font-mono text-[0.7rem] sm:text-xs text-text-secondary tracking-wider opacity-50">
           {copy.brand}
         </div>
 

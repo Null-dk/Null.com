@@ -55,9 +55,13 @@ function Ticker({ copy }) {
 
   return (
     <footer
-      className="ticker-footer fixed bottom-0 left-0 w-full border-t border-white/5 overflow-hidden backdrop-blur-[16px] z-50 animate-fade-in"
+      className="ticker-footer fixed bottom-0 left-0 w-full overflow-hidden z-50 animate-fade-in"
       style={{
-        background: 'linear-gradient(180deg, rgba(10,10,10,0.6), rgba(10,10,10,0.95))',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(10,10,10,0.55) 30%, rgba(10,10,10,0.92))',
+        backdropFilter: 'blur(16px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(150%)',
+        boxShadow:
+          'inset 0 1px 0 rgba(255,255,255,0.16), inset 0 2px 12px -6px rgba(255,255,255,0.08), 0 -8px 24px -12px rgba(0,0,0,0.5)',
         animationDelay: '0.8s',
       }}
       aria-label={copy.aria}

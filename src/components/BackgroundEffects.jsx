@@ -12,8 +12,8 @@ function BackgroundEffects() {
           top: '-20%',
           left: '-15%',
           filter: 'blur(120px)',
-          opacity: 0.5,
-          background: 'radial-gradient(circle at 40% 40%, rgba(255,255,255,0.09), rgba(255,255,255,0.03) 50%, transparent 70%)',
+          opacity: 0.6,
+          background: 'radial-gradient(circle at 40% 40%, rgba(255,255,255,0.11), rgba(255,255,255,0.035) 50%, transparent 70%)',
         }}
         aria-hidden="true"
       />
@@ -27,8 +27,8 @@ function BackgroundEffects() {
           bottom: '-15%',
           right: '-12%',
           filter: 'blur(110px)',
-          opacity: 0.4,
-          background: 'radial-gradient(circle at 60% 60%, rgba(255,255,255,0.07), rgba(255,255,255,0.02) 50%, transparent 70%)',
+          opacity: 0.5,
+          background: 'radial-gradient(circle at 60% 60%, rgba(255,255,255,0.085), rgba(255,255,255,0.025) 50%, transparent 70%)',
           animationDelay: '-12s',
         }}
         aria-hidden="true"
@@ -43,9 +43,25 @@ function BackgroundEffects() {
           top: '35%',
           right: '5%',
           filter: 'blur(90px)',
-          opacity: 0.22,
-          background: 'radial-gradient(circle, rgba(255,255,255,0.06), transparent 65%)',
+          opacity: 0.28,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.07), transparent 65%)',
           animationDelay: '-7s',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Mid-screen fill — keeps frost contrast under cards over empty regions */}
+      <div
+        className="bg-orb fixed rounded-full pointer-events-none -z-3 animate-float"
+        style={{
+          width: 480,
+          height: 480,
+          top: '40%',
+          left: '28%',
+          filter: 'blur(130px)',
+          opacity: 0.18,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%)',
+          animationDelay: '-4s',
         }}
         aria-hidden="true"
       />
