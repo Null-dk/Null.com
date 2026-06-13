@@ -1,4 +1,5 @@
 import { useRef, useCallback } from 'react'
+import { useLiquidGlass } from '../hooks/useLiquidGlass'
 
 const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -36,6 +37,8 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
 
   const isOffline = tag === 'Offline'
 
+  useLiquidGlass(cardRef, { enabled: !isPlaceholder && !isOffline })
+
   const handleMouseMove = useCallback((e) => {
     if (isTouchDevice || prefersReducedMotion || isPlaceholder || isOffline) return
     const card = cardRef.current
@@ -61,7 +64,7 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
     if (card) card.style.transform = ''
   }, [])
 
-  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} ${isOffline ? 'opacity-50 grayscale pointer-events-none' : ''} group/card bg-glass-bg border border-glass-border rounded-2xl relative overflow-hidden flex flex-col backdrop-blur-[12px] text-text-primary no-underline animate-fade-in-up`
+  const cardClasses = `domain-card ${isPlaceholder ? 'placeholder-card' : ''} ${isOffline ? 'opacity-50 grayscale pointer-events-none' : ''} group/card relative overflow-hidden flex flex-col text-text-primary no-underline animate-fade-in-up`
   const cardStyle = {
     animationDelay,
     '--fade-in-up-opacity': isPlaceholder ? 0.4 : isOffline ? 0.5 : 1,
@@ -69,7 +72,7 @@ function DomainCard({ name, url, description, tag, icon, index, total, isPlaceho
 
   const content = (
     <>
-      <div className="card-shine" aria-hidden="true" />
+      <div className="glass-specular-sweep" aria-hidden="true" />
 
       {/* Card header with icon and tag */}
       <div className="flex items-center justify-between px-6 pt-5 pb-0">

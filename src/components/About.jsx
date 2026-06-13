@@ -63,7 +63,7 @@ function About({ copy }) {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-between gap-3 px-5 py-3 border border-white/10 rounded-sm font-mono text-xs tracking-wider text-text-secondary hover:text-accent hover:border-white/25 transition-all duration-300 group/link"
+              className="glass-surface inline-flex items-center justify-between gap-3 px-5 py-3.5 rounded-full font-mono text-xs tracking-wider text-text-secondary hover:text-accent hover:-translate-y-0.5 transition-all duration-300 group/link"
             >
               <span className="inline-flex items-center gap-3 min-w-0">
                 {link.icon}
