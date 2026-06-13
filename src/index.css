@@ -489,6 +489,8 @@ body::before {
 @media (prefers-contrast: high) {
   .domain-card {
     border-width: 2px;
+    border-style: solid;
+    border-color: currentColor;
   }
 }
 
