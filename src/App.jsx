@@ -11,18 +11,6 @@ import { DEFAULT_LANGUAGE, getLanguageOptions, getLocaleCopy } from './i18n'
 
 const domainMetadata = [
   {
-    name: 'circuit.menu',
-    url: 'https://circuit.menu',
-    tag: 'Offline',
-    icon: '~',
-  },
-  {
-    name: 'coolstorydidntask.com',
-    url: 'https://coolstorydidntask.com',
-    tag: 'Beta',
-    icon: '>',
-  },
-  {
     name: 'altraic.com',
     url: 'https://altraic.com',
     tag: 'Beta',
@@ -31,10 +19,9 @@ const domainMetadata = [
   {
     name: 'vistraic.com',
     url: 'https://vistraic.com',
-    description: 'Private beta. Public details are intentionally hidden until launch.',
+    description: 'Automated Minecraft bot.',
     tag: 'Beta',
     icon: '+',
-    hideDescription: true,
   },
   {
     name: 'mi6.tf',
@@ -162,7 +149,6 @@ function App() {
                 name={domain.name}
                 url={domain.url}
                 description={domain.description}
-                hideDescription={domain.hideDescription}
                 tag={domain.tag}
                 icon={domain.icon}
                 index={index}
