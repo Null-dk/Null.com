@@ -437,7 +437,7 @@ body::before {
   }
 }
 
-.placeholder-card:hover .card-shine {
+.placeholder-card:hover .glass-specular-sweep::after {
   left: -100%;
 }
 
@@ -489,6 +489,8 @@ body::before {
 @media (prefers-contrast: high) {
   .domain-card {
     border-width: 2px;
+    border-style: solid;
+    border-color: currentColor;
   }
 }
 
