@@ -437,7 +437,7 @@ body::before {
   }
 }
 
-.placeholder-card:hover .card-shine {
+.placeholder-card:hover .glass-specular-sweep::after {
   left: -100%;
 }
 
