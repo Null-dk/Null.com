@@ -1,6 +1,6 @@
 ﻿const baseDomains = {
   'altraic.com': 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
-  'vistraic.com': 'Automated Minecraft bot.',
+  'vistraic.com': 'A streamlined control dashboard for managing Minecraft accounts.',
   'mi6.tf': 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
   'obscurapdf.com': 'Privacy-focused PDF tools. Redact, encrypt, and process documents securely.',
   'justexplain.cv': 'AI-powered explanations at the comprehension level you choose.',

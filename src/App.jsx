@@ -20,7 +20,7 @@ const domainMetadata = [
   {
     name: 'vistraic.com',
     url: 'https://vistraic.com',
-    description: 'Automated Minecraft bot.',
+    description: 'A streamlined control dashboard for managing Minecraft accounts.',
     tag: 'Beta',
     icon: '+',
   },
@@ -33,7 +33,8 @@ const domainMetadata = [
   {
     name: 'obscurapdf.com',
     url: 'https://obscurapdf.com',
-    tag: 'Live',
+    description: '',
+    tag: 'Beta',
     icon: '#',
   },
   {
