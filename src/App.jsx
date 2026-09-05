@@ -2,7 +2,6 @@ import BackgroundEffects from './components/BackgroundEffects'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
 import About from './components/About'
-import { useMouseGridTracking } from './hooks/useMouseGridTracking'
 
 const domainMetadata = [
   {
@@ -49,8 +48,6 @@ const domainMetadata = [
 ]
 
 function App() {
-  useMouseGridTracking()
-
   return (
     <>
       <BackgroundEffects />

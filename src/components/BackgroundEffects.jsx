@@ -66,7 +66,7 @@ function BackgroundEffects() {
         aria-hidden="true"
       />
 
-      {/* Canvas: magnetic dot field + click ripples (replaces CSS bg-grid) */}
+      {/* Quiet static dot field */}
       <ParticleField />
 
       {/* Noise grain */}
