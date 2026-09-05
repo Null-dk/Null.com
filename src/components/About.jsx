@@ -13,9 +13,9 @@ const links = [
   },
 ]
 
-function About({ copy, language, languageOptions, onLanguageChange }) {
+function About() {
   return (
-    <section className="elsewhere max-w-[1180px] w-full mx-auto" aria-label={copy.sectionAria}>
+    <section className="elsewhere max-w-[1180px] w-full mx-auto" aria-label="Social links">
       <h2>Elsewhere</h2>
       <div className="social-grid">
         {links.map((link) => (
@@ -29,12 +29,6 @@ function About({ copy, language, languageOptions, onLanguageChange }) {
       </div>
       <div className="site-tail">
         <span>© {new Date().getFullYear()} Null Incorporated</span>
-        <label>
-          <span className="sr-only">Language</span>
-          <select value={language} onChange={(event) => onLanguageChange(event.target.value)}>
-            {languageOptions.map((option) => <option key={option.code} value={option.code}>{option.label}</option>)}
-          </select>
-        </label>
       </div>
     </section>
   )

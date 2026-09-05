@@ -6,25 +6,35 @@ function ArrowIcon() {
   )
 }
 
-function DomainCard({ name, url, description, icon, featured, animationDelay }) {
+function CardContents({ name, description, preview, offline }) {
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`project-piece ${featured ? 'project-piece--wide' : ''}`}
-      style={{ animationDelay }}
-    >
-      <div className="project-art" aria-hidden="true">
-        <div className="project-art-grid" />
-        <span className="project-symbol">{icon}</span>
-        <span className="project-ghost-name">{name}</span>
-        <span className="project-arrow"><ArrowIcon /></span>
+    <>
+      <div className={`project-art ${offline ? 'project-art--empty' : ''}`}>
+        {preview && <img src={preview} alt={`${name} website preview`} loading="lazy" />}
+        {!offline && <span className="project-arrow" aria-hidden="true"><ArrowIcon /></span>}
       </div>
       <div className="project-copy">
         <h2>{name}</h2>
         {description && <p>{description}</p>}
       </div>
+    </>
+  )
+}
+
+function DomainCard({ name, url, description, preview, offline = false, featured, animationDelay }) {
+  const className = `project-piece ${featured ? 'project-piece--wide' : ''} ${offline ? 'project-piece--offline' : ''}`
+
+  if (offline) {
+    return (
+      <div className={className} style={{ animationDelay }} aria-disabled="true">
+        <CardContents name={name} description={description} offline />
+      </div>
+    )
+  }
+
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" className={className} style={{ animationDelay }}>
+      <CardContents name={name} description={description} preview={preview} />
     </a>
   )
 }
