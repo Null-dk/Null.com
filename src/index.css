@@ -996,25 +996,36 @@ body::before {
     inset 0 -4px 8px -5px var(--glass-shade),
     0 4px 14px -4px var(--glass-cast),
     0 0 14px -3px rgba(255, 255, 255, 0.1);
-  transition: transform 400ms var(--ease-out-expo), opacity 400ms var(--ease-out-expo);
+  transition: opacity 400ms var(--ease-out-expo);
 }
 
-/* Catchlight — the detail that reads as a creature rather than a dot */
-.glass-pet__body::after {
-  content: '';
+/* Eyes — two shapes, no pupils. Expression comes from deforming them.
+   (Anki's Cozmo model: pupils and brows add nothing at this size.) */
+.glass-pet__eye {
   position: absolute;
-  top: 17%;
-  left: 23%;
+  top: 38%;
   width: 26%;
-  height: 26%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  filter: blur(1.5px);
+  height: 24%;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 7px rgba(255, 255, 255, 0.45);
+  transform-origin: center bottom;
+  transform:
+    translate(var(--pet-eye-x, 0px), var(--pet-eye-y, 0px))
+    scale(var(--pet-eye-sx, 1), var(--pet-eye-sy, 1));
+  transition: opacity 600ms var(--ease-out-expo);
+}
+
+.glass-pet__eye--left {
+  left: 17%;
+}
+
+.glass-pet__eye--right {
+  right: 17%;
 }
 
 .glass-pet__body:hover {
   opacity: 1;
-  transform: scale(1.14);
 }
 
 .glass-pet__say {
@@ -1053,6 +1064,21 @@ body::before {
 .glass-pet__say.is-visible {
   --say-shift: 0px;
   opacity: 1;
+}
+
+/* Dozing — dimmer, smaller, and quiet until something happens */
+.glass-pet--asleep .glass-pet__body {
+  opacity: 0.42;
+  animation: pet-breathe 5.4s ease-in-out infinite;
+}
+
+.glass-pet--asleep .glass-pet__eye {
+  opacity: 0.6;
+}
+
+@keyframes pet-breathe {
+  0%, 100% { transform: scale(0.86); }
+  50% { transform: scale(0.92); }
 }
 
 @media (prefers-reduced-motion: reduce) {
