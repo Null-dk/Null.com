@@ -15,6 +15,9 @@ const SAY_MS = 4800
 const REPEAT_MS = 60000
 const IDLE_MS = 45000
 const SLEEP_MS = 60000
+const STICKY = 120
+const SPOKEN_PENALTY = 260
+const POINTER_PULL = 0.18
 const WAKE_QUIET_MS = 20000
 
 const GAZE_RANGE = 3.6
@@ -133,9 +136,12 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let frame = 0
     const saidAt = new WeakMap()
 
-    // The most-read section: mostly-visible, and nearest the vertical middle.
-    const pickSubject = () => {
+    // The most-read section: mostly-visible and near the middle. Side-by-side
+    // cards tie on every vertical measure, so recency and the pointer break it —
+    // otherwise a right-column card could never win and would never speak.
+    const pickSubject = (now) => {
       const height = window.innerHeight
+      const pointerFresh = now - pointerSeenAt < GAZE_POINTER_MS
       let best = null
       let bestScore = -Infinity
       for (const el of document.querySelectorAll('[data-pet-line]')) {
@@ -143,7 +149,10 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         const visible = Math.min(rect.bottom, height) - Math.max(rect.top, 0)
         if (visible < 80) continue
         const offCenter = Math.abs((rect.top + rect.bottom) / 2 - height / 2)
-        const score = visible - offCenter * 0.6
+        let score = visible - offCenter * 0.6
+        if (el === subject) score += STICKY
+        if (now - (saidAt.get(el) ?? -Infinity) < REPEAT_MS) score -= SPOKEN_PENALTY
+        if (pointerFresh) score -= Math.abs((rect.left + rect.right) / 2 - pointerX) * POINTER_PULL
         if (score > bestScore) {
           best = el
           bestScore = score
@@ -224,7 +233,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
       if (now - pickedAt > PICK_MS) {
         pickedAt = now
-        const next = pickSubject()
+        const next = pickSubject(now)
         if (next !== subject) {
           subject = next
           subjectSince = now
