@@ -254,6 +254,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let asleep = false
     let sleptAt = 0
     let hoverTarget = null
+    let hoverPending = null
     let urgentUntil = 0
     let hurried = false
     let displacedUntil = 0
@@ -466,8 +467,8 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
       // Hovering a card hands it over at once — waiting on the scoring pass
       // is what made it feel slow to follow your attention.
-      if (!dragging && hoverTarget && hoverTarget !== subject) {
-        subject = hoverTarget
+      if (!dragging && hoverPending && !hurried) {
+        subject = hoverPending
         subjectSince = now
         pickedAt = now
         urgentUntil = now + URGENT_MS
@@ -488,7 +489,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         }
       }
 
-      if (!dragging && now > displacedUntil && now - pickedAt > PICK_MS) {
+      if (!dragging && !hoverTarget && now > displacedUntil && now - pickedAt > PICK_MS) {
         pickedAt = now
         const next = pickSubject(now)
         if (next !== subject) {
@@ -600,20 +601,26 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
       const settle = hurried ? SETTLE_FAST : SETTLE_MS
       const cooldown = hurried ? HOVER_COOLDOWN : REPEAT_MS
+      const hoverReady = hoverPending === subject
       const ready =
         !!subject?.dataset.petLine &&
         !asleep &&
         !dragging &&
+        document.visibilityState === 'visible' &&
+        document.hasFocus() &&
         now - subjectSince > settle &&
         now - lastSaid > HOVER_MIN_GAP &&
         now - (saidAt.get(subject) ?? -Infinity) > cooldown &&
-        (hurried || arrived)
+        (hoverReady || (!hoverTarget && arrived))
 
       if (ready) {
         // A hover is an explicit request, so it cuts off whatever is on screen.
         saidAt.set(subject, now)
         say(lineFor(subject), now)
-      } else if (!sayUntil && !asleep && !dragging && now - lastSaid > IDLE_MS && document.hasFocus()) {
+        if (hoverReady) hoverPending = null
+        hurried = false
+      } else if (!sayUntil && !asleep && !dragging && now - lastSaid > IDLE_MS &&
+        document.visibilityState === 'visible' && document.hasFocus()) {
         say(pick(IDLE_LINES), now)
       }
 
@@ -846,7 +853,33 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
     const onHoverSection = (event) => {
       if (dragging) return
-      hoverTarget = event.target.closest?.('[data-pet-line]') ?? null
+      const next = event.target.closest?.('[data-pet-line]') ?? null
+      if (next === hoverTarget) return
+      hoverTarget = next
+      hoverPending = next
+      hurried = false
+    }
+
+    const onLeaveSection = (event) => {
+      const from = event.target.closest?.('[data-pet-line]') ?? null
+      const to = event.relatedTarget?.closest?.('[data-pet-line]') ?? null
+      if (!from || from !== hoverTarget || to === from) return
+      hoverTarget = null
+      hoverPending = null
+      hurried = false
+    }
+
+    const clearHover = () => {
+      hoverTarget = null
+      hoverPending = null
+      hurried = false
+      hovering = false
+      bubble.classList.remove('is-visible')
+      sayUntil = 0
+    }
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') clearHover()
     }
 
     const onGrab = (event) => {
@@ -878,6 +911,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         dragMoved = true
         dragging = true
         hoverTarget = null
+        hoverPending = null
         excite = 1
         wake(now)
         root.classList.add('glass-pet--held')
@@ -914,6 +948,9 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     window.addEventListener('pointerup', onRelease)
     window.addEventListener('pointercancel', onRelease)
     document.addEventListener('pointerover', onHoverSection, { passive: true })
+    document.addEventListener('pointerout', onLeaveSection, { passive: true })
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('blur', clearHover)
     body.addEventListener('pointerenter', onEnter)
     body.addEventListener('pointerleave', onLeave)
     document.addEventListener('click', onLeaving, true)
@@ -929,6 +966,9 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       window.removeEventListener('pointerup', onRelease)
       window.removeEventListener('pointercancel', onRelease)
       document.removeEventListener('pointerover', onHoverSection)
+      document.removeEventListener('pointerout', onLeaveSection)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('blur', clearHover)
       body.removeEventListener('pointerenter', onEnter)
       body.removeEventListener('pointerleave', onLeave)
       document.removeEventListener('click', onLeaving, true)
