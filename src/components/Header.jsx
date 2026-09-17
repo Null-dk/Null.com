@@ -1,6 +1,9 @@
 function Header() {
   return (
-    <header className="portfolio-hero max-w-[1180px] mx-auto relative z-10 animate-fade-in-up">
+    <header
+      className="portfolio-hero max-w-[1180px] mx-auto relative z-10 animate-fade-in-up"
+      data-pet-line="this is the index. everything else lives below."
+    >
       <p className="hero-eyebrow">Est. 2024 — Copenhagen</p>
       <h1 className="portfolio-title">
         <span>Null</span>

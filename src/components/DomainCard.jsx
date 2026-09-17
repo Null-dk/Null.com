@@ -21,19 +21,26 @@ function CardContents({ name, description, preview, offline }) {
   )
 }
 
-function DomainCard({ name, url, description, preview, offline = false, featured, animationDelay }) {
+function DomainCard({ name, url, description, preview, offline = false, quip, featured, animationDelay }) {
   const className = `project-piece ${featured ? 'project-piece--wide' : ''} ${offline ? 'project-piece--offline' : ''}`
 
   if (offline) {
     return (
-      <div className={className} style={{ animationDelay }} aria-disabled="true">
+      <div className={className} style={{ animationDelay }} data-pet-line={quip} aria-disabled="true">
         <CardContents name={name} description={description} offline />
       </div>
     )
   }
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className={className} style={{ animationDelay }}>
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+      style={{ animationDelay }}
+      data-pet-line={quip}
+    >
       <CardContents name={name} description={description} preview={preview} />
     </a>
   )

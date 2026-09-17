@@ -15,7 +15,11 @@ const links = [
 
 function About() {
   return (
-    <section className="elsewhere max-w-[1180px] w-full mx-auto" aria-label="Social links">
+    <section
+      className="elsewhere max-w-[1180px] w-full mx-auto"
+      aria-label="Social links"
+      data-pet-line="that's the lot. discord's the fastest way to reach me."
+    >
       <h2>Elsewhere</h2>
       <div className="social-grid">
         {links.map((link) => (

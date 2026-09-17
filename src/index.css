@@ -966,3 +966,97 @@ body::before {
     break-inside: avoid;
   }
 }
+
+/* ============================================
+   Glass Pet
+   ============================================ */
+
+.glass-pet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.glass-pet__body {
+  position: relative;
+  border-radius: 50%;
+  opacity: 0.85;
+  cursor: pointer;
+  pointer-events: auto;
+  background:
+    radial-gradient(120% 120% at 30% 24%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 46%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(3px) saturate(150%);
+  -webkit-backdrop-filter: blur(3px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px var(--glass-wall),
+    inset 0 -4px 8px -5px var(--glass-shade),
+    0 4px 14px -4px var(--glass-cast),
+    0 0 14px -3px rgba(255, 255, 255, 0.1);
+  transition: transform 400ms var(--ease-out-expo), opacity 400ms var(--ease-out-expo);
+}
+
+/* Catchlight — the detail that reads as a creature rather than a dot */
+.glass-pet__body::after {
+  content: '';
+  position: absolute;
+  top: 17%;
+  left: 23%;
+  width: 26%;
+  height: 26%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  filter: blur(1.5px);
+}
+
+.glass-pet__body:hover {
+  opacity: 1;
+  transform: scale(1.14);
+}
+
+.glass-pet__say {
+  --say-shift: -5px;
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 12px);
+  width: max-content;
+  max-width: min(15rem, 62vw);
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+  background: linear-gradient(150deg, var(--glass-tint-top) 0%, var(--glass-tint-bottom) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px var(--glass-wall),
+    0 12px 40px -8px var(--glass-cast);
+  opacity: 0;
+  transform: translateY(-50%) translateX(var(--say-shift));
+  transition: opacity 400ms var(--ease-out-expo), transform 400ms var(--ease-out-expo);
+}
+
+.glass-pet__say--left {
+  --say-shift: 5px;
+  left: auto;
+  right: calc(100% + 12px);
+}
+
+.glass-pet__say.is-visible {
+  --say-shift: 0px;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-pet {
+    display: none;
+  }
+}
