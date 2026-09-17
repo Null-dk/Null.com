@@ -1018,14 +1018,32 @@ body::before {
 
 .glass-pet__eye--left {
   left: 17%;
+  --pet-eye-sy: var(--pet-eye-l, 1);
 }
 
 .glass-pet__eye--right {
   right: 17%;
+  --pet-eye-sy: var(--pet-eye-r, 1);
 }
 
-.glass-pet__body:hover {
-  opacity: 1;
+/* Contact shadow — sits where the body actually meets a card edge */
+.glass-pet__shadow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 86%;
+  height: 30%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.32) 45%, transparent 72%);
+  opacity: calc(var(--pet-contact, 0) * 0.9);
+  transform:
+    translate(-50%, -50%)
+    translate(var(--pet-contact-x, 0px), var(--pet-contact-y, 0px))
+    rotate(var(--pet-contact-rot, 0deg))
+    scale(calc(1.35 - 0.35 * var(--pet-contact, 0)));
+  filter: blur(calc(6px - 3.5px * var(--pet-contact, 0)));
+  pointer-events: none;
 }
 
 .glass-pet__say {

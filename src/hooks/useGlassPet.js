@@ -51,6 +51,23 @@ const PEAK_DECAY = 1.6
 const STILL_SPEED = 12
 const STILL_MS = 600
 
+const LEDGE_DROP = 210
+const CONTACT_REACH = 26
+const CONTACT_FALLOFF = 1.4
+const WINK_CHANCE = 0.15
+const POSE_MIN = 6000
+const POSE_SPREAD = 8000
+const POSE_HOLD = 900
+const POSE_HOLD_SPREAD = 900
+const POSE_SQUINT = 0.6
+const POSE_EASE = 7
+const BUSINESS_MIN = 9000
+const BUSINESS_SPREAD = 11000
+const HOP_IMPULSE = 270
+const PACE_MS = 2500
+const LEAN_MS = 1200
+const LEAN_DROP = 14
+
 const HOVER_SCALE = 1.14
 const RESTITUTION = 0.25
 const COLLIDE_MIN_WIDTH = 720
@@ -73,6 +90,12 @@ const WAKE_LINES = [
   'oh. hi.',
   'i was resting.',
   "didn't hear you come back.",
+]
+
+const FAREWELL_LINES = [
+  'say hi to {name} for me.',
+  '{name}. good choice.',
+  'off you go then.',
 ]
 
 const prefersReducedMotion = () =>
@@ -132,6 +155,22 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let squashAt = -Infinity
     let hover = 1
     let hovering = false
+    let asymL = 1
+    let asymR = 1
+    let poseL = 1
+    let poseR = 1
+    let poseUntil = 0
+    let poseAt = performance.now() + POSE_MIN
+    let winkEye = null
+    let errandX = 0
+    let errandY = 0
+    let errandUntil = 0
+    let errandAt = performance.now() + BUSINESS_MIN
+    let byeIndex = -1
+    let contact = 0
+    let contactX = 0
+    let contactY = 0
+    let contactRot = 0
     let last = performance.now()
     let frame = 0
     const saidAt = new WeakMap()
@@ -208,9 +247,23 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
       const art = el.querySelector('.project-art')
       const rect = el.getBoundingClientRect()
-      const spot = art
-        ? nearestLedge(art.getBoundingClientRect(), px, py, half + 2)
-        : { x: rect.right - INSET, y: rect.bottom - INSET }
+      let spot
+      if (art) {
+        const box = art.getBoundingClientRect()
+        spot = nearestLedge(box, px, py, half + 2)
+        // Dangling under a card looks wrong — drop onto the ledge below if there is one.
+        if (spot.y > box.bottom) {
+          let ledge = null
+          for (const r of rects) {
+            if (r.top <= spot.y || spot.x < r.left || spot.x > r.right) continue
+            if (r.top - spot.y > LEDGE_DROP) continue
+            if (!ledge || r.top < ledge.top) ledge = r
+          }
+          if (ledge) spot = { x: spot.x, y: ledge.top - (half + 2) }
+        }
+      } else {
+        spot = { x: rect.right - INSET, y: rect.bottom - INSET }
+      }
 
       const clear = colliding() ? pushOut(spot.x, spot.y, rects, half) : spot
       return { x: clampX(clear.x, half), y: clampY(clear.y, half) }
@@ -266,6 +319,17 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         // Never perfectly still — two unrelated periods so it doesn't read as a loop.
         targetX += Math.sin(now / 4300) * DRIFT_X
         targetY += Math.sin(now / 6700 + 1.3) * DRIFT_Y
+        if (now < errandUntil) {
+          targetX += errandX
+          targetY += errandY
+        }
+      }
+
+      // Keep the goal itself legal, or the spring fights the collision forever.
+      if (colliding()) {
+        const legal = pushOut(targetX, targetY, rects, half)
+        targetX = clampX(legal.x, half)
+        targetY = clampY(legal.y, half)
       }
 
       vx += ((targetX - x) * STIFFNESS - vx * DAMPING) * dt
@@ -378,12 +442,14 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
           blinkStart = now
           blinkAt = now + BLINK_MIN + Math.random() * BLINK_SPREAD
           doubleAt = Math.random() < DOUBLE_BLINK_CHANCE ? now + BLINK_MS + DOUBLE_BLINK_GAP : Infinity
+          winkEye = Math.random() < WINK_CHANCE ? (Math.random() < 0.5 ? 'l' : 'r') : null
         }
         if (now >= doubleAt) {
           blinkStart = now
           doubleAt = Infinity
         }
         const phase = (now - blinkStart) / BLINK_MS
+        if (phase >= 1) winkEye = null
         if (phase >= 0 && phase < 1) {
           // Snaps shut, opens slower — an even close looks mechanical.
           const shut = phase < BLINK_CLOSE
@@ -413,10 +479,73 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       hover += ((hovering ? HOVER_SCALE : 1) - hover) * (1 - Math.exp(-12 * dt))
 
       root.style.transform = `translate3d(${(x - half).toFixed(1)}px, ${(y - half).toFixed(1)}px, 0)`
+      // Contact — nearest surface in any direction, since it wedges against
+      // side edges as often as it sits on top of one.
+      let touch = null
+      for (const r of rects) {
+        const nx = x - Math.min(Math.max(x, r.left), r.right)
+        const ny = y - Math.min(Math.max(y, r.top), r.bottom)
+        const reach = Math.hypot(nx, ny)
+        const distance = reach - half
+        if (distance < -1 || distance > CONTACT_REACH) continue
+        if (!touch || distance < touch.distance) {
+          const length = reach || 1
+          touch = { distance, nx: nx / length, ny: ny / length }
+        }
+      }
+      const wanted = touch ? Math.pow(1 - Math.max(touch.distance, 0) / CONTACT_REACH, CONTACT_FALLOFF) : 0
+      contact += (wanted - contact) * (1 - Math.exp(-10 * dt))
+      if (touch) {
+        contactX = -touch.nx * half
+        contactY = -touch.ny * half
+        contactRot = Math.abs(touch.nx) > Math.abs(touch.ny) ? 90 : 0
+      }
+
+      // Eyes drift out of symmetry now and then — identical twins read as a machine.
+      if (!asleep && now >= poseAt) {
+        poseAt = now + POSE_MIN + Math.random() * POSE_SPREAD
+        poseUntil = now + POSE_HOLD + Math.random() * POSE_HOLD_SPREAD
+        const narrow = Math.random() < 0.5
+        poseL = narrow ? POSE_SQUINT : 1
+        poseR = narrow ? 1 : POSE_SQUINT
+      }
+      if (now > poseUntil) {
+        poseL = 1
+        poseR = 1
+      }
+      const poseEase = 1 - Math.exp(-POSE_EASE * dt)
+      asymL += (poseL - asymL) * poseEase
+      asymR += (poseR - asymR) * poseEase
+
+      // Idle business — a creature that only breathes is furniture.
+      if (!asleep && !sayUntil && arrived && now >= errandAt) {
+        errandAt = now + BUSINESS_MIN + Math.random() * BUSINESS_SPREAD
+        const pick = Math.random()
+        if (pick < 0.34) {
+          vy -= HOP_IMPULSE
+          excite = Math.max(excite, 0.6)
+        } else if (pick < 0.7) {
+          errandX = (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 80)
+          errandY = 0
+          errandUntil = now + PACE_MS
+        } else {
+          errandX = 0
+          errandY = LEAN_DROP
+          errandUntil = now + LEAN_MS
+        }
+      }
+
+      const openL = winkEye === 'r' ? 1 : lid
+      const openR = winkEye === 'l' ? 1 : lid
       root.style.setProperty('--pet-eye-x', `${eyeX.toFixed(2)}px`)
       root.style.setProperty('--pet-eye-y', `${eyeY.toFixed(2)}px`)
       root.style.setProperty('--pet-eye-sx', (1 + excite * EXCITE_WIDTH).toFixed(3))
-      root.style.setProperty('--pet-eye-sy', ((1 + excite * EXCITE_HEIGHT) * lid).toFixed(3))
+      root.style.setProperty('--pet-eye-l', ((1 + excite * EXCITE_HEIGHT) * asymL * openL).toFixed(3))
+      root.style.setProperty('--pet-eye-r', ((1 + excite * EXCITE_HEIGHT) * asymR * openR).toFixed(3))
+      root.style.setProperty('--pet-contact', contact.toFixed(3))
+      root.style.setProperty('--pet-contact-x', `${contactX.toFixed(1)}px`)
+      root.style.setProperty('--pet-contact-y', `${contactY.toFixed(1)}px`)
+      root.style.setProperty('--pet-contact-rot', `${contactRot}deg`)
       body.style.transform =
         `rotate(${travelAngle.toFixed(3)}rad) scale(${((1 + stretch) * hover).toFixed(3)}, ${((1 - stretch * 0.72) * hover).toFixed(3)}) rotate(${(-travelAngle).toFixed(3)}rad)`
     }
@@ -450,12 +579,24 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       say(POKE_LINES[pokeIndex], now)
     }
 
+    const onLeaving = (event) => {
+      const link = event.target.closest?.('a[data-pet-line]')
+      if (!link) return
+      const now = performance.now()
+      wake(now)
+      excite = 1
+      byeIndex = (byeIndex + 1) % FAREWELL_LINES.length
+      const name = link.querySelector('h2')?.textContent ?? 'that one'
+      say(FAREWELL_LINES[byeIndex].replace('{name}', name), now)
+    }
+
     const onEnter = () => { hovering = true }
     const onLeave = () => { hovering = false }
 
     body.addEventListener('click', onPoke)
     body.addEventListener('pointerenter', onEnter)
     body.addEventListener('pointerleave', onLeave)
+    document.addEventListener('click', onLeaving, true)
     window.addEventListener('scroll', onActivity, { passive: true })
     window.addEventListener('pointermove', onActivity, { passive: true })
     frame = requestAnimationFrame(tick)
@@ -465,6 +606,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       body.removeEventListener('click', onPoke)
       body.removeEventListener('pointerenter', onEnter)
       body.removeEventListener('pointerleave', onLeave)
+      document.removeEventListener('click', onLeaving, true)
       window.removeEventListener('scroll', onActivity)
       window.removeEventListener('pointermove', onActivity)
     }
