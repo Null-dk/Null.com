@@ -68,6 +68,19 @@ const PACE_MS = 2500
 const LEAN_MS = 1200
 const LEAN_DROP = 14
 
+const STIFFNESS_FAST = 150
+const DAMPING_FAST = 19
+const STIFFNESS_DRAG = 620
+const DAMPING_DRAG = 34
+const URGENT_MS = 900
+const SETTLE_FAST = 140
+const HOVER_COOLDOWN = 700
+const HOVER_MIN_GAP = 200
+const DISPLACED_MS = 12000
+const SUBSTEP = 1 / 120
+const DRAG_THRESHOLD = 6
+const THROW_MAX = 2600
+
 const HOVER_SCALE = 1.14
 const RESTITUTION = 0.25
 const COLLIDE_MIN_WIDTH = 720
@@ -77,6 +90,22 @@ const IDLE_LINES = [
   'take your time.',
   "i don't need much.",
   "i'm mostly refraction.",
+  'nothing happens if you scroll faster.',
+  'i live in the gaps.',
+  "i've read all of these.",
+  'no notifications up here. peaceful.',
+  'the light comes from over there.',
+  'this edge is a good edge.',
+  'i keep the corners warm.',
+  "i don't do much. by design.",
+  'scroll. i will follow.',
+  'somewhere below is a dead project.',
+  'i count pixels when it is slow.',
+  'nothing needs your attention.',
+  'a nice dark page, this.',
+  'you can click things, you know.',
+  'i was compiled, not born.',
+  'still glass. still here.',
 ]
 
 const POKE_LINES = [
@@ -84,18 +113,114 @@ const POKE_LINES = [
   "careful, i'm glass.",
   'that did nothing. nice though.',
   'poke received.',
+  'again? fine.',
+  'i felt that.',
+  'boop returned.',
+  'you may poke twice more.',
+  'ow. metaphorically.',
+  'noted.',
+  'this is our thing now.',
+  'i have no buttons.',
+  'keep going, see what happens.',
+  'nothing happens. sorry.',
+  'stop that. continue.',
+  'that tickles, conceptually.',
+  'pressed. no effect.',
+  'you found my one interaction.',
+  'hello down there.',
+  'ok ok.',
 ]
 
 const WAKE_LINES = [
   'oh. hi.',
   'i was resting.',
   "didn't hear you come back.",
+  'back already?',
+  'give me a second.',
+  'i was dreaming about squircles.',
+  'awake. mostly.',
+  'what did i miss?',
+  'five more minutes.',
+  'right. working.',
+  'you were gone a while.',
+  'still dark out.',
+  'reboot complete.',
+  'i kept your place.',
+  'nothing happened while you were away.',
+  'that was a good nap.',
+  'yawn. glassily.',
+  'ah, company.',
+  'i drifted off.',
+  'present.',
 ]
 
 const FAREWELL_LINES = [
   'say hi to {name} for me.',
   '{name}. good choice.',
   'off you go then.',
+  "{name}'s a good one.",
+  "don't be long.",
+  'i will hold the page.',
+  'new tab. brave.',
+  'tell {name} i sent you.',
+  "i'll be here.",
+  'go on then.',
+  'that one still works, i think.',
+  'bring back a souvenir.',
+  'mind the loading screen.',
+  'see you in a minute.',
+  '{name} it is.',
+  'i approve.',
+  'try not to break it.',
+  'godspeed.',
+  'the door is open.',
+  'take notes.',
+]
+
+const GRAB_LINES = [
+  'put me down.',
+  'oh. we are doing this.',
+  'unhand me.',
+  'wheee.',
+  'i am not a toy.',
+  'this is undignified.',
+  'still glass, by the way.',
+  'where are we going?',
+  'i have no legs for this.',
+  'weightless. unpleasant.',
+  'fine. carry me.',
+  'the view is different up here.',
+  'i did not consent to this.',
+  'this counts as exercise.',
+  'do a loop.',
+  'i get motion sick.',
+  'my edges are delicate.',
+  'release me somewhere nice.',
+  'you are enjoying this.',
+  'careful. careful.',
+]
+
+const DROP_LINES = [
+  'landed.',
+  'ow.',
+  'never again.',
+  'i am fine. thank you for asking.',
+  'good throw.',
+  'that was a lot of air.',
+  'still in one piece.',
+  'ten out of ten.',
+  'again, but gentler.',
+  'i forgive you.',
+  'physics.',
+  'nice arc.',
+  'i meant to do that.',
+  'stuck the landing.',
+  'that is going in the log.',
+  'whee. ow.',
+  'i will find my own way back.',
+  'do not do that again.',
+  'ok that was fun.',
+  'my rim is chipped. probably.',
 ]
 
 const prefersReducedMotion = () =>
@@ -128,9 +253,28 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let lastActivity = performance.now()
     let asleep = false
     let sleptAt = 0
-    let idleIndex = -1
-    let pokeIndex = -1
-    let wakeIndex = -1
+    let hoverTarget = null
+    let urgentUntil = 0
+    let hurried = false
+    let displacedUntil = 0
+    let anchorX = null
+    let anchorY = null
+    let restingSince = 0
+    let dragging = false
+    let dragArmed = false
+    let dragMoved = false
+    let grabDX = 0
+    let grabDY = 0
+    let dragPX = 0
+    let dragPY = 0
+    let dragVX = 0
+    let dragVY = 0
+    let dragAt = 0
+    let grabOriginX = 0
+    let grabOriginY = 0
+    let awaitingLanding = false
+    let releasedAt = 0
+    let suppressClickUntil = 0
     let pointerX = 0
     let pointerY = 0
     let pointerSeenAt = -Infinity
@@ -166,7 +310,6 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let errandY = 0
     let errandUntil = 0
     let errandAt = performance.now() + BUSINESS_MIN
-    let byeIndex = -1
     let contact = 0
     let contactX = 0
     let contactY = 0
@@ -174,6 +317,26 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let last = performance.now()
     let frame = 0
     const saidAt = new WeakMap()
+    const saidCount = new WeakMap()
+    const lastPicked = new Map()
+
+    // Random, but never the same line twice running.
+    const pick = (bank) => {
+      if (bank.length < 2) return bank[0]
+      let index = Math.floor(Math.random() * bank.length)
+      if (index === lastPicked.get(bank)) index = (index + 1) % bank.length
+      lastPicked.set(bank, index)
+      return bank[index]
+    }
+
+    // A section may register several lines, pipe-separated; work through them.
+    const lineFor = (el) => {
+      const options = (el.dataset.petLine ?? '').split('|').map((part) => part.trim()).filter(Boolean)
+      if (!options.length) return null
+      const seen = saidCount.get(el) ?? 0
+      saidCount.set(el, seen + 1)
+      return options[seen % options.length]
+    }
 
     // The most-read section: mostly-visible and near the middle. Side-by-side
     // cards tie on every vertical measure, so recency and the pointer break it —
@@ -195,6 +358,23 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         if (score > bestScore) {
           best = el
           bestScore = score
+        }
+      }
+      return best
+    }
+
+    const nearestSection = (px, py) => {
+      let best = null
+      let bestDistance = Infinity
+      for (const el of document.querySelectorAll('[data-pet-line]')) {
+        const r = el.getBoundingClientRect()
+        if (r.bottom < 0 || r.top > window.innerHeight) continue
+        const dx = px - Math.min(Math.max(px, r.left), r.right)
+        const dy = py - Math.min(Math.max(py, r.top), r.bottom)
+        const distance = Math.hypot(dx, dy)
+        if (distance < bestDistance) {
+          bestDistance = distance
+          best = el
         }
       }
       return best
@@ -284,10 +464,35 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       const half = body.offsetWidth / 2
       const rects = surfaces()
 
-      if (now - pickedAt > PICK_MS) {
+      // Hovering a card hands it over at once — waiting on the scoring pass
+      // is what made it feel slow to follow your attention.
+      if (!dragging && hoverTarget && hoverTarget !== subject) {
+        subject = hoverTarget
+        subjectSince = now
+        pickedAt = now
+        urgentUntil = now + URGENT_MS
+        hurried = true
+        displacedUntil = 0
+        anchorX = null
+        windUpUntil = 0
+      }
+
+      // Just dropped somewhere: adopt whatever it landed next to and stay put,
+      // instead of trudging back to the perch it came from.
+      if (!dragging && now < displacedUntil) {
+        const local = nearestSection(x, y)
+        if (local && local !== subject) {
+          subject = local
+          subjectSince = now
+          hurried = false
+        }
+      }
+
+      if (!dragging && now > displacedUntil && now - pickedAt > PICK_MS) {
         pickedAt = now
         const next = pickSubject(now)
         if (next !== subject) {
+          hurried = false
           subject = next
           subjectSince = now
 
@@ -308,9 +513,19 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         root.classList.add('glass-pet--asleep')
       }
 
-      const perch = perchFor(subject, rects, half, x, y)
+      const displaced = !dragging && now < displacedUntil
+      const perch = displaced && anchorX !== null
+        ? { x: anchorX, y: anchorY }
+        : perchFor(subject, rects, half, x, y)
       let targetX = perch.x
       let targetY = perch.y
+
+      // Just dropped: no pull at all until it comes to rest, or it would be
+      // hauled straight back to the ledge it came from.
+      if (displaced && anchorX === null) {
+        targetX = x
+        targetY = y
+      }
 
       if (now < windUpUntil) {
         targetX = windUpX
@@ -332,13 +547,27 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         targetY = clampY(legal.y, half)
       }
 
-      vx += ((targetX - x) * STIFFNESS - vx * DAMPING) * dt
-      vy += ((targetY - y) * STIFFNESS - vy * DAMPING) * dt
-      x += vx * dt
-      y += vy * dt
+      if (dragging) {
+        targetX = dragPX + grabDX
+        targetY = dragPY + grabDY
+      }
+
+      const stiffness = dragging ? STIFFNESS_DRAG : now < urgentUntil ? STIFFNESS_FAST : STIFFNESS
+      const damping = dragging ? DAMPING_DRAG : now < urgentUntil ? DAMPING_FAST : DAMPING
+
+      // Fixed sub-steps: a stiff spring on a long frame would otherwise blow up.
+      let remaining = dt
+      while (remaining > 0) {
+        const step = Math.min(remaining, SUBSTEP)
+        vx += ((targetX - x) * stiffness - vx * damping) * step
+        vy += ((targetY - y) * stiffness - vy * damping) * step
+        x += vx * step
+        y += vy * step
+        remaining -= step
+      }
 
       // Cards are solid: push clear and lose a little speed on the bump.
-      if (colliding()) {
+      if (colliding() && !dragging) {
         const clear = pushOut(x, y, rects, half)
         if (clear.x !== x) {
           x = clear.x
@@ -353,22 +582,42 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       x = clampX(x, half)
       y = clampY(y, half)
 
+      if (displaced && anchorX === null) {
+        const coasting = Math.hypot(vx, vy)
+        restingSince = coasting < 40 ? (restingSince || now) : 0
+        if (restingSince && now - restingSince > 180) {
+          const settled = colliding() ? pushOut(x, y, rects, half) : { x, y }
+          anchorX = clampX(settled.x, half)
+          anchorY = clampY(settled.y, half)
+        }
+      }
+
       const drifting = Math.hypot(vx, vy)
       stillSince = drifting < STILL_SPEED ? (stillSince || now) : 0
       const arrived =
         (Math.hypot(perch.x - x, perch.y - y) < 60 && drifting < 90) ||
         (stillSince > 0 && now - stillSince > STILL_MS)
 
-      if (!sayUntil) {
-        const line = subject?.dataset.petLine
-        if (line && arrived && !asleep && now - subjectSince > SETTLE_MS && now - (saidAt.get(subject) ?? -Infinity) > REPEAT_MS) {
-          saidAt.set(subject, now)
-          say(line, now)
-        } else if (!asleep && now - lastSaid > IDLE_MS && document.hasFocus()) {
-          idleIndex = (idleIndex + 1) % IDLE_LINES.length
-          say(IDLE_LINES[idleIndex], now)
-        }
-      } else if (now > sayUntil) {
+      const settle = hurried ? SETTLE_FAST : SETTLE_MS
+      const cooldown = hurried ? HOVER_COOLDOWN : REPEAT_MS
+      const ready =
+        !!subject?.dataset.petLine &&
+        !asleep &&
+        !dragging &&
+        now - subjectSince > settle &&
+        now - lastSaid > HOVER_MIN_GAP &&
+        now - (saidAt.get(subject) ?? -Infinity) > cooldown &&
+        (hurried || arrived)
+
+      if (ready) {
+        // A hover is an explicit request, so it cuts off whatever is on screen.
+        saidAt.set(subject, now)
+        say(lineFor(subject), now)
+      } else if (!sayUntil && !asleep && !dragging && now - lastSaid > IDLE_MS && document.hasFocus()) {
+        say(pick(IDLE_LINES), now)
+      }
+
+      if (sayUntil && now > sayUntil) {
         bubble.classList.remove('is-visible')
         sayUntil = 0
       }
@@ -470,6 +719,15 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         blinkStart = now
         excite = 1
         peakSpeed = 0
+        if (awaitingLanding) {
+          awaitingLanding = false
+          say(pick(DROP_LINES), now)
+        }
+      }
+      // A gentle release never triggers an impact, so land the line anyway.
+      if (awaitingLanding && now - releasedAt > 900 && speed < IMPACT_TO) {
+        awaitingLanding = false
+        say(pick(DROP_LINES), now)
       }
       const impact = (now - squashAt) / SQUASH_MS
       if (impact >= 0 && impact < 1) {
@@ -565,18 +823,15 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         pointerY = event.clientY
         pointerSeenAt = now
       }
-      if (wake(now)) {
-        wakeIndex = (wakeIndex + 1) % WAKE_LINES.length
-        say(WAKE_LINES[wakeIndex], now)
-      }
+      if (wake(now)) say(pick(WAKE_LINES), now)
     }
 
     const onPoke = () => {
       const now = performance.now()
+      if (now < suppressClickUntil) return
       wake(now)
       excite = 1
-      pokeIndex = (pokeIndex + 1) % POKE_LINES.length
-      say(POKE_LINES[pokeIndex], now)
+      say(pick(POKE_LINES), now)
     }
 
     const onLeaving = (event) => {
@@ -585,15 +840,80 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       const now = performance.now()
       wake(now)
       excite = 1
-      byeIndex = (byeIndex + 1) % FAREWELL_LINES.length
       const name = link.querySelector('h2')?.textContent ?? 'that one'
-      say(FAREWELL_LINES[byeIndex].replace('{name}', name), now)
+      say(pick(FAREWELL_LINES).replace('{name}', name), now)
+    }
+
+    const onHoverSection = (event) => {
+      if (dragging) return
+      hoverTarget = event.target.closest?.('[data-pet-line]') ?? null
+    }
+
+    const onGrab = (event) => {
+      dragArmed = true
+      dragMoved = false
+      grabOriginX = event.clientX
+      grabOriginY = event.clientY
+      dragPX = event.clientX
+      dragPY = event.clientY
+      grabDX = x - event.clientX
+      grabDY = y - event.clientY
+      dragAt = performance.now()
+      dragVX = 0
+      dragVY = 0
+    }
+
+    const onDragMove = (event) => {
+      if (!dragArmed) return
+      const now = performance.now()
+      const elapsed = Math.max((now - dragAt) / 1000, 0.001)
+      dragVX = (event.clientX - dragPX) / elapsed
+      dragVY = (event.clientY - dragPY) / elapsed
+      dragPX = event.clientX
+      dragPY = event.clientY
+      dragAt = now
+      lastActivity = now
+
+      if (!dragMoved && Math.hypot(event.clientX - grabOriginX, event.clientY - grabOriginY) > DRAG_THRESHOLD) {
+        dragMoved = true
+        dragging = true
+        hoverTarget = null
+        excite = 1
+        wake(now)
+        root.classList.add('glass-pet--held')
+        say(pick(GRAB_LINES), now)
+      }
+    }
+
+    const onRelease = () => {
+      if (!dragArmed) return
+      dragArmed = false
+      if (!dragging) return
+      dragging = false
+      root.classList.remove('glass-pet--held')
+      const now = performance.now()
+      vx = Math.max(-THROW_MAX, Math.min(THROW_MAX, dragVX))
+      vy = Math.max(-THROW_MAX, Math.min(THROW_MAX, dragVY))
+      excite = 1
+      lastActivity = now
+      releasedAt = now
+      displacedUntil = now + DISPLACED_MS
+      anchorX = null
+      anchorY = null
+      restingSince = 0
+      awaitingLanding = true
+      suppressClickUntil = now + 250
     }
 
     const onEnter = () => { hovering = true }
     const onLeave = () => { hovering = false }
 
     body.addEventListener('click', onPoke)
+    body.addEventListener('pointerdown', onGrab)
+    window.addEventListener('pointermove', onDragMove, { passive: true })
+    window.addEventListener('pointerup', onRelease)
+    window.addEventListener('pointercancel', onRelease)
+    document.addEventListener('pointerover', onHoverSection, { passive: true })
     body.addEventListener('pointerenter', onEnter)
     body.addEventListener('pointerleave', onLeave)
     document.addEventListener('click', onLeaving, true)
@@ -604,6 +924,11 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     return () => {
       cancelAnimationFrame(frame)
       body.removeEventListener('click', onPoke)
+      body.removeEventListener('pointerdown', onGrab)
+      window.removeEventListener('pointermove', onDragMove)
+      window.removeEventListener('pointerup', onRelease)
+      window.removeEventListener('pointercancel', onRelease)
+      document.removeEventListener('pointerover', onHoverSection)
       body.removeEventListener('pointerenter', onEnter)
       body.removeEventListener('pointerleave', onLeave)
       document.removeEventListener('click', onLeaving, true)

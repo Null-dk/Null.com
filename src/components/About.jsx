@@ -18,7 +18,7 @@ function About() {
     <section
       className="elsewhere max-w-[1180px] w-full mx-auto"
       aria-label="Social links"
-      data-pet-line="that's the lot. discord's the fastest way to reach me."
+      data-pet-line="that's the lot. discord's the fastest way to reach me. | end of the page. thanks for scrolling. | you made it to the bottom. respect. | nothing below this. i checked. | say something in discord. it gets read."
     >
       <h2>Elsewhere</h2>
       <div className="social-grid">
