@@ -21,13 +21,13 @@ function CardContents({ name, description, preview, offline }) {
   )
 }
 
-function DomainCard({ name, url, description, preview, offline = false, quip, featured, animationDelay }) {
+function DomainCard({ name, url, description, preview, offline = false, quip, petBehavior, featured, animationDelay }) {
   const petLine = Array.isArray(quip) ? quip.join(' | ') : quip
   const className = `project-piece ${featured ? 'project-piece--wide' : ''} ${offline ? 'project-piece--offline' : ''}`
 
   if (offline) {
     return (
-      <div className={className} style={{ animationDelay }} data-pet-line={petLine} aria-disabled="true">
+      <div className={className} style={{ animationDelay }} data-pet-line={petLine} data-pet-behavior={petBehavior} aria-disabled="true">
         <CardContents name={name} description={description} offline />
       </div>
     )
@@ -41,6 +41,7 @@ function DomainCard({ name, url, description, preview, offline = false, quip, fe
       className={className}
       style={{ animationDelay }}
       data-pet-line={petLine}
+      data-pet-behavior={petBehavior}
     >
       <CardContents name={name} description={description} preview={preview} />
     </a>

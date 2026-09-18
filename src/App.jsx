@@ -11,6 +11,7 @@ const domainMetadata = [
     url: 'https://mi6.tf',
     description: 'URL shortener and temporary file hosting service. Fast, simple, and ephemeral.',
     preview: '/previews/mi6.png',
+    petBehavior: 'ephemeral',
     quip: [
       'links and files that expire. on purpose.',
       'nothing here is meant to last.',
@@ -24,6 +25,7 @@ const domainMetadata = [
     url: 'https://justexplain.cv',
     description: 'AI-powered explanations at the comprehension level you choose.',
     preview: '/previews/justexplain.png',
+    petBehavior: 'teacher',
     quip: [
       'it explains things properly. i just float.',
       'pick a level. it adjusts.',
@@ -37,6 +39,7 @@ const domainMetadata = [
     url: 'https://fxlive.cc',
     description: 'Real-time currency converter with live FX rates, short-term charts, and ticker history.',
     preview: '/previews/fxlive.png',
+    petBehavior: 'ticker',
     quip: [
       'rates that refuse to sit still.',
       'numbers, moving. endlessly.',
@@ -50,6 +53,7 @@ const domainMetadata = [
     url: 'https://altraic.com',
     description: 'Early-access landing page for Altraic, currently running a public waitlist before launch.',
     preview: '/previews/altraic.png',
+    petBehavior: 'waiting',
     quip: [
       'still a waitlist. patience is the feature.',
       'not open yet. soon-ish.',
@@ -63,6 +67,7 @@ const domainMetadata = [
     url: 'https://vistraic.com',
     description: 'A streamlined control dashboard for managing Minecraft accounts.',
     preview: '/previews/vistraic.png',
+    petBehavior: 'patrol',
     quip: [
       'minecraft accounts, one pane of glass.',
       'a dashboard for a very specific problem.',
@@ -75,6 +80,7 @@ const domainMetadata = [
     name: 'obscurapdf.com',
     description: 'Currently unavailable.',
     offline: true,
+    petBehavior: 'ghost',
     quip: [
       "this one's offline. it happens.",
       'retired. no plans.',
@@ -88,6 +94,7 @@ const domainMetadata = [
     url: 'https://n-ulllabs.com',
     description: 'A home for focused browser tools, including a universal media downloader and a private clipboard image downloader.',
     preview: '/previews/null-labs.png',
+    petBehavior: 'experiment',
     quip: [
       'small tools. one job each.',
       'the drawer where experiments live.',
@@ -123,6 +130,7 @@ function App() {
                 preview={domain.preview}
                 offline={domain.offline}
                 quip={domain.quip}
+                petBehavior={domain.petBehavior}
                 animationDelay={`${0.5 + index * 0.1}s`}
                 featured={index === 0 || index === domainMetadata.length - 1}
               />

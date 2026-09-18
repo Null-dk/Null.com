@@ -7,18 +7,20 @@ const DAMPING = 11
 const ANTICIPATE_MS = 170
 const ANTICIPATE_PULL = 11
 const LAUNCH_DISTANCE = 130
-const DRIFT_X = 3
-const DRIFT_Y = 4
-const PICK_MS = 120
+const DRIFT_X = 1.2
+const DRIFT_Y = 1.6
 const SETTLE_MS = 700
 const SAY_MS = 4800
 const REPEAT_MS = 60000
 const IDLE_MS = 45000
 const SLEEP_MS = 60000
 const STICKY = 120
-const SPOKEN_PENALTY = 260
-const POINTER_PULL = 0.18
 const WAKE_QUIET_MS = 20000
+const SCROLL_SETTLE_MS = 260
+const DECISION_MIN = 8000
+const DECISION_SPREAD = 10000
+const RELOCATE_COOLDOWN_MIN = 20000
+const RELOCATE_COOLDOWN_SPREAD = 20000
 
 const GAZE_RANGE = 3.6
 const GAZE_POINTER_MS = 2500
@@ -61,29 +63,30 @@ const POSE_HOLD = 900
 const POSE_HOLD_SPREAD = 900
 const POSE_SQUINT = 0.6
 const POSE_EASE = 7
-const BUSINESS_MIN = 9000
-const BUSINESS_SPREAD = 11000
 const HOP_IMPULSE = 270
-const PACE_MS = 2500
-const LEAN_MS = 1200
-const LEAN_DROP = 14
 
-const STIFFNESS_FAST = 150
-const DAMPING_FAST = 19
 const STIFFNESS_DRAG = 620
 const DAMPING_DRAG = 34
-const URGENT_MS = 900
-const SETTLE_FAST = 140
 const HOVER_COOLDOWN = 700
 const HOVER_MIN_GAP = 200
+const HOVER_INTENT_MS = 520
 const DISPLACED_MS = 12000
 const SUBSTEP = 1 / 120
 const DRAG_THRESHOLD = 6
 const THROW_MAX = 2600
 
 const HOVER_SCALE = 1.14
-const RESTITUTION = 0.25
 const COLLIDE_MIN_WIDTH = 720
+const ROAM_DURATION = 2800
+const ROAM_DURATION_SPREAD = 1800
+const ROAM_MARGIN = 66
+const ROAM_DISTANCE_MIN = 90
+const ROAM_DISTANCE_SPREAD = 170
+const RIGHT_TERRITORY = 0.68
+const RARE_MIN = 65000
+const RARE_SPREAD = 65000
+const RARE_DURATION = 8500
+const LONG_PRESS_MS = 680
 
 const IDLE_LINES = [
   'still here.',
@@ -223,13 +226,48 @@ const DROP_LINES = [
   'my rim is chipped. probably.',
 ]
 
+const DOUBLE_POKE_LINES = [
+  'double boop.',
+  'two. i counted.',
+  'a very deliberate poke.',
+  'is this a code?',
+]
+
+const POKE_COMBO_LINES = [
+  'combo detected.',
+  'okay, speedy.',
+  'that was a lot of you at once.',
+  'achievement: persistent finger.',
+]
+
+const HOLD_LINES = [
+  'this is strangely calming.',
+  'you can let go whenever.',
+  'warm hands.',
+  '...comfortable, actually.',
+]
+
+const THROW_COMBO_LINES = [
+  'i am learning to fly against my will.',
+  'frequent flyer status achieved.',
+  'you have discovered momentum.',
+  'my insurance will hear about this.',
+]
+
+const RARE_EVENTS = [
+  { name: 'prism', lines: ['oh. colours.', 'briefly spectacular.', 'the light did something strange.'] },
+  { name: 'phase', lines: ['between pixels. back soon.', 'i appear to be optional.', 'do not adjust your screen.'] },
+  { name: 'zoomies', lines: ['one moment. important business.', 'sudden appointment.', 'i have somewhere to be.'] },
+]
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /**
- * Perches the pet on whichever `[data-pet-line]` section is being read and
- * lets it remark on it. Any element can host the pet by declaring a line.
+ * Runs a small weighted behavior engine around static screen-space anchors.
+ * `[data-pet-line]` elements provide dialogue and surfaces, while pointer
+ * attention remains completely separate from locomotion.
  */
 export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
   useEffect(() => {
@@ -238,13 +276,16 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     const bubble = bubbleRef.current
     if (!root || !body || !bubble || prefersReducedMotion()) return
 
-    let x = window.innerWidth * 0.5
-    let y = window.innerHeight * 0.55
+    const spawnInset = Math.max(72, Math.min(150, window.innerWidth * 0.1))
+    let x = window.innerWidth - spawnInset
+    let y = window.innerHeight * 0.7
     let vx = 0
     let vy = 0
     let subject = null
     let subjectSince = 0
-    let pickedAt = 0
+    let scrollRequested = false
+    let scrollAt = -Infinity
+    let frozen = !document.hasFocus() || document.visibilityState !== 'visible'
     let windUpUntil = 0
     let windUpX = 0
     let windUpY = 0
@@ -255,11 +296,10 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let sleptAt = 0
     let hoverTarget = null
     let hoverPending = null
-    let urgentUntil = 0
-    let hurried = false
+    let hoverPendingSince = 0
     let displacedUntil = 0
-    let anchorX = null
-    let anchorY = null
+    let anchorX = x
+    let anchorY = y
     let restingSince = 0
     let dragging = false
     let dragArmed = false
@@ -307,19 +347,61 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     let poseUntil = 0
     let poseAt = performance.now() + POSE_MIN
     let winkEye = null
-    let errandX = 0
-    let errandY = 0
-    let errandUntil = 0
-    let errandAt = performance.now() + BUSINESS_MIN
     let contact = 0
     let contactX = 0
     let contactY = 0
     let contactRot = 0
+    let mood = 'content'
+    let moodUntil = 0
+    let roamX = 0
+    let roamY = 0
+    let roamUntil = 0
+    let decisionAt = performance.now() + DECISION_MIN
+    let relocateAllowedAt = performance.now() + RELOCATE_COOLDOWN_MIN
+    let rareAt = performance.now() + RARE_MIN + Math.random() * RARE_SPREAD
+    let rareUntil = 0
+    let rareKind = ''
+    let holdTimer = 0
+    let holdTriggered = false
+    const pokeTimes = []
+    const throwTimes = []
     let last = performance.now()
     let frame = 0
     const saidAt = new WeakMap()
     const saidCount = new WeakMap()
     const lastPicked = new Map()
+
+    const setMood = (next, now, duration = 5000) => {
+      mood = next
+      moodUntil = now + duration
+      root.dataset.mood = next
+    }
+
+    const territoryMinX = () =>
+      window.innerWidth * (window.innerWidth <= 720 ? 0.55 : RIGHT_TERRITORY)
+
+    const rightTerritoryPoint = () => ({
+      x: territoryMinX() + Math.random() * Math.max(1, window.innerWidth - ROAM_MARGIN - territoryMinX()),
+      y: ROAM_MARGIN + Math.random() * Math.max(1, window.innerHeight - ROAM_MARGIN * 2),
+    })
+
+    const nearbyPoint = (wide = false) => {
+      if (wide) return rightTerritoryPoint()
+      const angle = Math.random() * Math.PI * 2
+      const distance = ROAM_DISTANCE_MIN + Math.random() * ROAM_DISTANCE_SPREAD
+      return {
+        x: Math.min(Math.max(x + Math.cos(angle) * distance, territoryMinX()), window.innerWidth - ROAM_MARGIN),
+        y: Math.min(Math.max(y + Math.sin(angle) * distance, ROAM_MARGIN), window.innerHeight - ROAM_MARGIN),
+      }
+    }
+
+    const startRoam = (now, duration = ROAM_DURATION + Math.random() * ROAM_DURATION_SPREAD, wide = false) => {
+      const point = nearbyPoint(wide)
+      roamX = point.x
+      roamY = point.y
+      roamUntil = now + duration
+      decisionAt = roamUntil + DECISION_MIN + Math.random() * DECISION_SPREAD
+    }
 
     // Random, but never the same line twice running.
     const pick = (bank) => {
@@ -339,12 +421,10 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       return options[seen % options.length]
     }
 
-    // The most-read section: mostly-visible and near the middle. Side-by-side
-    // cards tie on every vertical measure, so recency and the pointer break it —
-    // otherwise a right-column card could never win and would never speak.
-    const pickSubject = (now) => {
+    // The most-read section is based on scroll position only. Pointer location
+    // may affect the eyes and dialogue, but never chooses the pet's home.
+    const pickSubject = () => {
       const height = window.innerHeight
-      const pointerFresh = now - pointerSeenAt < GAZE_POINTER_MS
       let best = null
       let bestScore = -Infinity
       for (const el of document.querySelectorAll('[data-pet-line]')) {
@@ -353,15 +433,21 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         if (visible < 80) continue
         const offCenter = Math.abs((rect.top + rect.bottom) / 2 - height / 2)
         let score = visible - offCenter * 0.6
+        if (el.dataset.petBehavior) score += 180
+        score += ((rect.left + rect.right) / 2 / window.innerWidth) * 220
         if (el === subject) score += STICKY
-        if (now - (saidAt.get(el) ?? -Infinity) < REPEAT_MS) score -= SPOKEN_PENALTY
-        if (pointerFresh) score -= Math.abs((rect.left + rect.right) / 2 - pointerX) * POINTER_PULL
         if (score > bestScore) {
           best = el
           bestScore = score
         }
       }
       return best
+    }
+
+    const subjectIsVisible = (el) => {
+      if (!el) return false
+      const rect = el.getBoundingClientRect()
+      return rect.bottom > 80 && rect.top < window.innerHeight - 80
     }
 
     const nearestSection = (px, py) => {
@@ -450,6 +536,49 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       return { x: clampX(clear.x, half), y: clampY(clear.y, half) }
     }
 
+    // Move a short distance along the edge already under the pet. This is the
+    // common autonomous movement; it never chooses a new card or chases input.
+    const shuffleAlongSurface = (el, half) => {
+      const art = el?.querySelector('.project-art')
+      if (!art) return null
+      const box = art.getBoundingClientRect()
+      const pad = half + 2
+      const sides = [
+        { side: 'top', distance: Math.abs(y - (box.top - pad)) },
+        { side: 'right', distance: Math.abs(x - (box.right + pad)) },
+        { side: 'bottom', distance: Math.abs(y - (box.bottom + pad)) },
+        { side: 'left', distance: Math.abs(x - (box.left - pad)) },
+      ].sort((a, b) => a.distance - b.distance)
+      const delta = (Math.random() < 0.5 ? -1 : 1) * (20 + Math.random() * 50)
+
+      if (sides[0].side === 'top' || sides[0].side === 'bottom') {
+        const minX = Math.max(box.left + half, territoryMinX())
+        const maxX = box.right - half
+        if (maxX < minX) return null
+        return {
+          x: clampX(Math.min(Math.max(x + delta, minX), maxX), half),
+          y: clampY(sides[0].side === 'top' ? box.top - pad : box.bottom + pad, half),
+        }
+      }
+      const sideX = sides[0].side === 'left' ? box.left - pad : box.right + pad
+      if (sideX < territoryMinX()) return null
+      return {
+        x: clampX(sideX, half),
+        y: clampY(Math.min(Math.max(y + delta, box.top + half), box.bottom - half), half),
+      }
+    }
+
+    const nearbySurface = (rects, half) => {
+      const candidates = [...document.querySelectorAll('[data-pet-line]')]
+        .filter((el) => el !== subject && subjectIsVisible(el))
+        .map((el) => ({ el, spot: perchFor(el, rects, half, x, y) }))
+        .map((entry) => ({ ...entry, distance: Math.hypot(entry.spot.x - x, entry.spot.y - y) }))
+        .filter((entry) => entry.distance < 520 && entry.spot.x >= territoryMinX())
+        .sort((a, b) => a.distance - b.distance)
+      if (!candidates.length) return null
+      return candidates[Math.floor(Math.random() * Math.min(2, candidates.length))]
+    }
+
     const say = (line, now) => {
       bubble.textContent = line
       bubble.classList.add('is-visible')
@@ -464,41 +593,37 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
 
       const half = body.offsetWidth / 2
       const rects = surfaces()
+      const active = !frozen && document.visibilityState === 'visible' && document.hasFocus()
 
-      // Hovering a card hands it over at once — waiting on the scoring pass
-      // is what made it feel slow to follow your attention.
-      if (!dragging && hoverPending && !hurried) {
-        subject = hoverPending
-        subjectSince = now
-        pickedAt = now
-        urgentUntil = now + URGENT_MS
-        hurried = true
-        displacedUntil = 0
-        anchorX = null
-        windUpUntil = 0
+      const roaming = !dragging && now < roamUntil
+
+      if (mood !== 'content' && !asleep && now > moodUntil) setMood('content', now, 0)
+
+      if (active && !rareKind && now >= rareAt && !asleep && !dragging) {
+        const event = RARE_EVENTS[Math.floor(Math.random() * RARE_EVENTS.length)]
+        rareKind = event.name
+        rareUntil = now + RARE_DURATION
+        rareAt = rareUntil + RARE_MIN + Math.random() * RARE_SPREAD
+        root.dataset.event = rareKind
+        setMood(rareKind === 'zoomies' ? 'mischievous' : 'curious', now, RARE_DURATION)
+        say(pick(event.lines), now)
+        if (rareKind === 'zoomies') startRoam(now, RARE_DURATION, true)
+      } else if (rareKind && now > rareUntil) {
+        rareKind = ''
+        delete root.dataset.event
       }
 
-      // Just dropped somewhere: adopt whatever it landed next to and stay put,
-      // instead of trudging back to the perch it came from.
-      if (!dragging && now < displacedUntil) {
-        const local = nearestSection(x, y)
-        if (local && local !== subject) {
-          subject = local
-          subjectSince = now
-          hurried = false
-        }
-      }
-
-      if (!dragging && !hoverTarget && now > displacedUntil && now - pickedAt > PICK_MS) {
-        pickedAt = now
-        const next = pickSubject(now)
-        if (next !== subject) {
-          hurried = false
+      // Surfaces are sampled only after scrolling stops. Between these moments,
+      // the anchor is fixed in screen space instead of chasing moving DOM boxes.
+      if (active && !dragging && now > displacedUntil && scrollRequested &&
+        now - scrollAt > SCROLL_SETTLE_MS) {
+        const next = subjectIsVisible(subject) ? subject : pickSubject()
+        if (next) {
+          const spot = perchFor(next, rects, half, x, y)
           subject = next
           subjectSince = now
-
-          // Lean away before a long trip, so the launch reads as intent.
-          const spot = perchFor(next, rects, half, x, y)
+          anchorX = spot.x
+          anchorY = spot.y
           const distance = Math.hypot(spot.x - x, spot.y - y)
           if (distance > LAUNCH_DISTANCE) {
             windUpX = x - ((spot.x - x) / distance) * ANTICIPATE_PULL
@@ -506,20 +631,90 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
             windUpUntil = now + ANTICIPATE_MS
           }
         }
+        scrollRequested = false
+        decisionAt = now + DECISION_MIN + Math.random() * DECISION_SPREAD
       }
 
-      if (!asleep && now - lastActivity > SLEEP_MS) {
+      const settledForDecision =
+        anchorX !== null &&
+        Math.hypot(anchorX - x, anchorY - y) < 36 &&
+        Math.hypot(vx, vy) < 70
+
+      // Shimeji-style weighted actions. Most decisions are deliberately
+      // non-locomotive; every movement gets a long quiet interval afterward.
+      if (active && !asleep && !dragging && !roaming && now > displacedUntil &&
+        settledForDecision && now >= decisionAt) {
+        decisionAt = now + DECISION_MIN + Math.random() * DECISION_SPREAD
+        const choice = Math.random()
+
+        if (choice < 0.45) {
+          // Stay put. Blinks, gaze and asymmetric eye poses carry the life here.
+          poseAt = Math.min(poseAt, now + 350)
+        } else if (choice < 0.7) {
+          // Small in-place action.
+          if (Math.random() < 0.45) vy -= HOP_IMPULSE * 0.55
+          else excite = Math.max(excite, 0.55)
+        } else if (choice < 0.85) {
+          const spot = shuffleAlongSurface(subject, half)
+          if (spot) {
+            anchorX = spot.x
+            anchorY = spot.y
+          }
+        } else if (choice < 0.93) {
+          const behavior = subject?.dataset.petBehavior ?? ''
+          if ((behavior === 'ephemeral' || behavior === 'ghost') && !rareKind) {
+            rareKind = 'phase'
+            rareUntil = now + 2200
+            root.dataset.event = rareKind
+          } else if (behavior === 'patrol' || behavior === 'ticker') {
+            const spot = shuffleAlongSurface(subject, half)
+            if (spot) {
+              anchorX = spot.x
+              anchorY = spot.y
+            }
+          } else if (behavior === 'waiting') {
+            setMood('calm', now, 4200)
+          } else if (behavior === 'experiment') {
+            vy -= HOP_IMPULSE * 0.7
+            excite = 0.8
+          } else {
+            poseAt = Math.min(poseAt, now + 200)
+          }
+        } else if (choice < 0.98) {
+          startRoam(now)
+        } else if (now >= relocateAllowedAt) {
+          const next = nearbySurface(rects, half)
+          if (next) {
+            subject = next.el
+            subjectSince = now
+            anchorX = next.spot.x
+            anchorY = next.spot.y
+            relocateAllowedAt = now + RELOCATE_COOLDOWN_MIN + Math.random() * RELOCATE_COOLDOWN_SPREAD
+            decisionAt = relocateAllowedAt
+          }
+        }
+      }
+
+      if (active && !asleep && now - lastActivity > SLEEP_MS) {
         asleep = true
         sleptAt = now
         root.classList.add('glass-pet--asleep')
+        root.dataset.mood = 'sleepy'
       }
 
       const displaced = !dragging && now < displacedUntil
-      const perch = displaced && anchorX !== null
+      const perch = anchorX !== null
         ? { x: anchorX, y: anchorY }
-        : perchFor(subject, rects, half, x, y)
+        : { x, y }
       let targetX = perch.x
       let targetY = perch.y
+
+      // Card edges are home, not a leash. Regular roaming and special events
+      // can choose any safe viewport point, including points over the cards.
+      if (roaming) {
+        targetX = roamX
+        targetY = roamY
+      }
 
       // Just dropped: no pull at all until it comes to rest, or it would be
       // hauled straight back to the ledge it came from.
@@ -528,33 +723,31 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         targetY = y
       }
 
-      if (now < windUpUntil) {
+      if (!active) {
+        targetX = x
+        targetY = y
+        vx = 0
+        vy = 0
+      } else if (now < windUpUntil) {
         targetX = windUpX
         targetY = windUpY
       } else if (!asleep) {
-        // Never perfectly still — two unrelated periods so it doesn't read as a loop.
+        // A tiny breathing drift is visual life, not locomotion.
         targetX += Math.sin(now / 4300) * DRIFT_X
         targetY += Math.sin(now / 6700 + 1.3) * DRIFT_Y
-        if (now < errandUntil) {
-          targetX += errandX
-          targetY += errandY
-        }
       }
+      root.dataset.behavior = subject?.dataset.petBehavior ?? ''
 
-      // Keep the goal itself legal, or the spring fights the collision forever.
-      if (colliding()) {
-        const legal = pushOut(targetX, targetY, rects, half)
-        targetX = clampX(legal.x, half)
-        targetY = clampY(legal.y, half)
-      }
+      targetX = clampX(targetX, half)
+      targetY = clampY(targetY, half)
 
       if (dragging) {
         targetX = dragPX + grabDX
         targetY = dragPY + grabDY
       }
 
-      const stiffness = dragging ? STIFFNESS_DRAG : now < urgentUntil ? STIFFNESS_FAST : STIFFNESS
-      const damping = dragging ? DAMPING_DRAG : now < urgentUntil ? DAMPING_FAST : DAMPING
+      const stiffness = dragging ? STIFFNESS_DRAG : STIFFNESS
+      const damping = dragging ? DAMPING_DRAG : DAMPING
 
       // Fixed sub-steps: a stiff spring on a long frame would otherwise blow up.
       let remaining = dt
@@ -567,19 +760,6 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         remaining -= step
       }
 
-      // Cards are solid: push clear and lose a little speed on the bump.
-      if (colliding() && !dragging) {
-        const clear = pushOut(x, y, rects, half)
-        if (clear.x !== x) {
-          x = clear.x
-          vx = -vx * RESTITUTION
-        }
-        if (clear.y !== y) {
-          y = clear.y
-          vy = -vy * RESTITUTION
-        }
-      }
-
       x = clampX(x, half)
       y = clampY(y, half)
 
@@ -587,9 +767,15 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         const coasting = Math.hypot(vx, vy)
         restingSince = coasting < 40 ? (restingSince || now) : 0
         if (restingSince && now - restingSince > 180) {
-          const settled = colliding() ? pushOut(x, y, rects, half) : { x, y }
-          anchorX = clampX(settled.x, half)
-          anchorY = clampY(settled.y, half)
+          anchorX = clampX(x, half)
+          anchorY = clampY(y, half)
+          const local = nearestSection(x, y)
+          if (local) {
+            subject = local
+            subjectSince = now
+            scrollRequested = false
+          }
+          decisionAt = now + DECISION_MIN + Math.random() * DECISION_SPREAD
         }
       }
 
@@ -599,28 +785,35 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
         (Math.hypot(perch.x - x, perch.y - y) < 60 && drifting < 90) ||
         (stillSince > 0 && now - stillSince > STILL_MS)
 
-      const settle = hurried ? SETTLE_FAST : SETTLE_MS
-      const cooldown = hurried ? HOVER_COOLDOWN : REPEAT_MS
-      const hoverReady = hoverPending === subject
+      const hoverReady =
+        !!hoverPending?.dataset.petLine &&
+        active &&
+        !asleep &&
+        !dragging &&
+        now - hoverPendingSince > HOVER_INTENT_MS &&
+        hoverPending.matches(':hover') &&
+        now - lastSaid > HOVER_MIN_GAP &&
+        now - (saidAt.get(hoverPending) ?? -Infinity) > HOVER_COOLDOWN
       const ready =
         !!subject?.dataset.petLine &&
         !asleep &&
         !dragging &&
-        document.visibilityState === 'visible' &&
-        document.hasFocus() &&
-        now - subjectSince > settle &&
+        active &&
+        now - subjectSince > SETTLE_MS &&
         now - lastSaid > HOVER_MIN_GAP &&
-        now - (saidAt.get(subject) ?? -Infinity) > cooldown &&
-        (hoverReady || (!hoverTarget && arrived))
+        now - (saidAt.get(subject) ?? -Infinity) > REPEAT_MS &&
+        arrived
 
-      if (ready) {
-        // A hover is an explicit request, so it cuts off whatever is on screen.
+      if (hoverReady) {
+        saidAt.set(hoverPending, now)
+        say(lineFor(hoverPending), now)
+        hoverPending = null
+        hoverPendingSince = 0
+      } else if (ready) {
         saidAt.set(subject, now)
         say(lineFor(subject), now)
-        if (hoverReady) hoverPending = null
-        hurried = false
       } else if (!sayUntil && !asleep && !dragging && now - lastSaid > IDLE_MS &&
-        document.visibilityState === 'visible' && document.hasFocus()) {
+        active) {
         say(pick(IDLE_LINES), now)
       }
 
@@ -782,24 +975,6 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       asymL += (poseL - asymL) * poseEase
       asymR += (poseR - asymR) * poseEase
 
-      // Idle business — a creature that only breathes is furniture.
-      if (!asleep && !sayUntil && arrived && now >= errandAt) {
-        errandAt = now + BUSINESS_MIN + Math.random() * BUSINESS_SPREAD
-        const pick = Math.random()
-        if (pick < 0.34) {
-          vy -= HOP_IMPULSE
-          excite = Math.max(excite, 0.6)
-        } else if (pick < 0.7) {
-          errandX = (Math.random() < 0.5 ? -1 : 1) * (60 + Math.random() * 80)
-          errandY = 0
-          errandUntil = now + PACE_MS
-        } else {
-          errandX = 0
-          errandY = LEAN_DROP
-          errandUntil = now + LEAN_MS
-        }
-      }
-
       const openL = winkEye === 'r' ? 1 : lid
       const openR = winkEye === 'l' ? 1 : lid
       root.style.setProperty('--pet-eye-x', `${eyeX.toFixed(2)}px`)
@@ -820,6 +995,7 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       if (!asleep) return false
       asleep = false
       root.classList.remove('glass-pet--asleep')
+      setMood('curious', now, 5000)
       return now - sleptAt > WAKE_QUIET_MS
     }
 
@@ -833,12 +1009,45 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       if (wake(now)) say(pick(WAKE_LINES), now)
     }
 
+    const onScroll = () => {
+      const now = performance.now()
+      scrollRequested = true
+      scrollAt = now
+      roamUntil = 0
+      windUpUntil = 0
+      anchorX = x
+      anchorY = y
+      vx = 0
+      vy = 0
+      lastActivity = now
+      if (wake(now)) say(pick(WAKE_LINES), now)
+    }
+
     const onPoke = () => {
       const now = performance.now()
       if (now < suppressClickUntil) return
       wake(now)
       excite = 1
-      say(pick(POKE_LINES), now)
+      pokeTimes.push(now)
+      while (pokeTimes.length && now - pokeTimes[0] > 1600) pokeTimes.shift()
+
+      if (pokeTimes.length >= 5) {
+        pokeTimes.length = 0
+        setMood('dizzy', now, 6500)
+        startRoam(now, 3000)
+        vy -= HOP_IMPULSE * 0.8
+        say(pick(POKE_COMBO_LINES), now)
+      } else if (pokeTimes.length === 3 && now - pokeTimes[0] < 900) {
+        setMood('mischievous', now, 5000)
+        vy -= HOP_IMPULSE
+        say(pick(POKE_COMBO_LINES), now)
+      } else if (pokeTimes.length === 2 && now - pokeTimes[0] < 420) {
+        setMood('excited', now, 4000)
+        say(pick(DOUBLE_POKE_LINES), now)
+      } else {
+        setMood('curious', now, 3500)
+        say(pick(POKE_LINES), now)
+      }
     }
 
     const onLeaving = (event) => {
@@ -855,9 +1064,11 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       if (dragging) return
       const next = event.target.closest?.('[data-pet-line]') ?? null
       if (next === hoverTarget) return
+      const now = performance.now()
       hoverTarget = next
       hoverPending = next
-      hurried = false
+      hoverPendingSince = next ? now : 0
+      if (next) setMood('curious', now, 3200)
     }
 
     const onLeaveSection = (event) => {
@@ -866,34 +1077,86 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       if (!from || from !== hoverTarget || to === from) return
       hoverTarget = null
       hoverPending = null
-      hurried = false
+      hoverPendingSince = 0
     }
 
     const clearHover = () => {
       hoverTarget = null
       hoverPending = null
-      hurried = false
+      hoverPendingSince = 0
       hovering = false
       bubble.classList.remove('is-visible')
       sayUntil = 0
     }
 
+    const freeze = () => {
+      const now = performance.now()
+      frozen = true
+      clearHover()
+      vx = 0
+      vy = 0
+      roamUntil = 0
+      windUpUntil = 0
+      dragging = false
+      dragArmed = false
+      awaitingLanding = false
+      anchorX = x
+      anchorY = y
+      displacedUntil = 0
+      decisionAt = now + DECISION_MIN + Math.random() * DECISION_SPREAD
+      root.classList.remove('glass-pet--held')
+
+      if (rareKind) {
+        rareKind = ''
+        rareUntil = 0
+        rareAt = now + RARE_MIN + Math.random() * RARE_SPREAD
+        delete root.dataset.event
+      }
+    }
+
+    const resume = () => {
+      if (document.visibilityState !== 'visible') return
+      const now = performance.now()
+      frozen = false
+      last = now
+      lastActivity = now
+      if (rareAt < now) rareAt = now + RARE_MIN + Math.random() * RARE_SPREAD
+      scrollRequested = !subjectIsVisible(subject)
+      scrollAt = now - SCROLL_SETTLE_MS
+    }
+
     const onVisibilityChange = () => {
-      if (document.visibilityState !== 'visible') clearHover()
+      if (document.visibilityState === 'visible') resume()
+      else freeze()
     }
 
     const onGrab = (event) => {
+      const now = performance.now()
       dragArmed = true
       dragMoved = false
+      holdTriggered = false
       grabOriginX = event.clientX
       grabOriginY = event.clientY
       dragPX = event.clientX
       dragPY = event.clientY
       grabDX = x - event.clientX
       grabDY = y - event.clientY
-      dragAt = performance.now()
+      dragAt = now
       dragVX = 0
       dragVY = 0
+      if (awaitingLanding) {
+        awaitingLanding = false
+        setMood('excited', now, 4500)
+        say('caught me.', now)
+      }
+      window.clearTimeout(holdTimer)
+      holdTimer = window.setTimeout(() => {
+        if (!dragArmed || dragMoved) return
+        holdTriggered = true
+        suppressClickUntil = performance.now() + 400
+        setMood('calm', performance.now(), 6500)
+        say(pick(HOLD_LINES), performance.now())
+      }, LONG_PRESS_MS)
     }
 
     const onDragMove = (event) => {
@@ -908,21 +1171,28 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       lastActivity = now
 
       if (!dragMoved && Math.hypot(event.clientX - grabOriginX, event.clientY - grabOriginY) > DRAG_THRESHOLD) {
+        window.clearTimeout(holdTimer)
         dragMoved = true
         dragging = true
         hoverTarget = null
         hoverPending = null
+        hoverPendingSince = 0
         excite = 1
         wake(now)
         root.classList.add('glass-pet--held')
+        setMood('startled', now, 4500)
         say(pick(GRAB_LINES), now)
       }
     }
 
     const onRelease = () => {
       if (!dragArmed) return
+      window.clearTimeout(holdTimer)
       dragArmed = false
-      if (!dragging) return
+      if (!dragging) {
+        if (holdTriggered) suppressClickUntil = performance.now() + 350
+        return
+      }
       dragging = false
       root.classList.remove('glass-pet--held')
       const now = performance.now()
@@ -937,6 +1207,15 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       restingSince = 0
       awaitingLanding = true
       suppressClickUntil = now + 250
+      throwTimes.push(now)
+      while (throwTimes.length && now - throwTimes[0] > 10000) throwTimes.shift()
+      if (throwTimes.length >= 3) {
+        throwTimes.length = 0
+        setMood('dizzy', now, 7000)
+        say(pick(THROW_COMBO_LINES), now)
+      } else {
+        setMood('excited', now, 4500)
+      }
     }
 
     const onEnter = () => { hovering = true }
@@ -950,16 +1229,20 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
     document.addEventListener('pointerover', onHoverSection, { passive: true })
     document.addEventListener('pointerout', onLeaveSection, { passive: true })
     document.addEventListener('visibilitychange', onVisibilityChange)
-    window.addEventListener('blur', clearHover)
+    window.addEventListener('blur', freeze)
+    window.addEventListener('focus', resume)
+    window.addEventListener('pagehide', freeze)
+    document.documentElement.addEventListener('pointerleave', clearHover)
     body.addEventListener('pointerenter', onEnter)
     body.addEventListener('pointerleave', onLeave)
     document.addEventListener('click', onLeaving, true)
-    window.addEventListener('scroll', onActivity, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('pointermove', onActivity, { passive: true })
     frame = requestAnimationFrame(tick)
 
     return () => {
       cancelAnimationFrame(frame)
+      window.clearTimeout(holdTimer)
       body.removeEventListener('click', onPoke)
       body.removeEventListener('pointerdown', onGrab)
       window.removeEventListener('pointermove', onDragMove)
@@ -968,11 +1251,14 @@ export function useGlassPet({ rootRef, bodyRef, bubbleRef }) {
       document.removeEventListener('pointerover', onHoverSection)
       document.removeEventListener('pointerout', onLeaveSection)
       document.removeEventListener('visibilitychange', onVisibilityChange)
-      window.removeEventListener('blur', clearHover)
+      window.removeEventListener('blur', freeze)
+      window.removeEventListener('focus', resume)
+      window.removeEventListener('pagehide', freeze)
+      document.documentElement.removeEventListener('pointerleave', clearHover)
       body.removeEventListener('pointerenter', onEnter)
       body.removeEventListener('pointerleave', onLeave)
       document.removeEventListener('click', onLeaving, true)
-      window.removeEventListener('scroll', onActivity)
+      window.removeEventListener('scroll', onScroll)
       window.removeEventListener('pointermove', onActivity)
     }
   }, [rootRef, bodyRef, bubbleRef])

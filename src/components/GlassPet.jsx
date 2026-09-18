@@ -13,7 +13,7 @@ function GlassPet() {
   useGlassPet({ rootRef, bodyRef, bubbleRef })
 
   return (
-    <div ref={rootRef} className="glass-pet" aria-hidden="true">
+    <div ref={rootRef} className="glass-pet" aria-hidden="true" data-mood="content">
       <span className="glass-pet__shadow" />
       <div ref={bodyRef} className="glass-pet__body" style={{ width: SIZE, height: SIZE }}>
         <span className="glass-pet__eye glass-pet__eye--left" />
