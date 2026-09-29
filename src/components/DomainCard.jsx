@@ -1,5 +1,3 @@
-import { diveInto } from '../utils/dive'
-
 function ArrowIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -11,7 +9,7 @@ function ArrowIcon() {
 function CardContents({ name, description, preview, offline }) {
   return (
     <>
-      <div className={`project-art ${offline ? 'project-art--empty' : ''}`} data-slot={name}>
+      <div className={`project-art ${offline ? 'project-art--empty' : ''}`}>
         {preview && <img src={preview} alt={`${name} website preview`} loading="lazy" />}
         {!offline && <span className="project-arrow" aria-hidden="true"><ArrowIcon /></span>}
       </div>
@@ -35,7 +33,7 @@ function DomainCard({ name, url, description, preview, offline = false, featured
   }
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className={className} style={{ animationDelay }} onClick={(event) => diveInto(event, url)}>
+    <a href={url} target="_blank" rel="noopener noreferrer" className={className} style={{ animationDelay }}>
       <CardContents name={name} description={description} preview={preview} />
     </a>
   )
