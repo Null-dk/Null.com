@@ -1,9 +1,7 @@
-import { useRef } from 'react'
 import BackgroundEffects from './components/BackgroundEffects'
 import Header from './components/Header'
 import DomainCard from './components/DomainCard'
 import About from './components/About'
-import ProjectStack from './components/ProjectStack'
 
 const domainMetadata = [
   {
@@ -49,11 +47,7 @@ const domainMetadata = [
   },
 ]
 
-const stackedProjects = domainMetadata.filter((domain) => domain.preview)
-
 function App() {
-  const galleryRef = useRef(null)
-
   return (
     <>
       <BackgroundEffects />
@@ -62,10 +56,7 @@ function App() {
         <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
           <Header />
 
-          <ProjectStack projects={stackedProjects} galleryRef={galleryRef} />
-
           <section
-            ref={galleryRef}
             className="project-gallery max-w-[1180px] w-full mx-auto animate-fade-in-up"
             style={{ animationDelay: '0.4s' }}
             aria-label="Projects"
