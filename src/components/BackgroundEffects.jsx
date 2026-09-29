@@ -50,7 +50,7 @@ function BackgroundEffects() {
         aria-hidden="true"
       />
 
-      {/* Mid-screen fill — keeps frost contrast under cards over empty regions */}
+      {/* Mid-screen fill — adds depth across empty regions */}
       <div
         className="bg-orb fixed rounded-full pointer-events-none -z-3 animate-float"
         style={{
